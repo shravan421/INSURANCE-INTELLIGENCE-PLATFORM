@@ -141,14 +141,6 @@ def get_at_risk_policies() -> pd.DataFrame:
             ORDER BY R.LOSS_RATIO DESC
         """)
     except Exception:
-        try:
-            import json
-            vf_path = os.path.join(os.path.dirname(__file__), "at_risk_policies_verified.json")
-            if os.path.exists(vf_path):
-                with open(vf_path, "r") as f:
-                    return pd.DataFrame(json.load(f))
-        except Exception:
-            pass
         return run_query("SELECT POLICY_ID, CATEGORY, RISK_SCORE, REV_AT_RISK, ACTION, IDENTIFIED_DATE AS START_DATE, CREATED_AT FROM INSURANCE_MGMT_SYSTEM.RISK.AT_RISK_POLICIES")
 
 def estimate_premium(age, income, credit_score, coverage) -> float:

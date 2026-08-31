@@ -1453,29 +1453,6 @@ elif "Risk & Pricing Dashboard" in selected_tab:
     # Filter at_risk_df consistently using verified live Snowflake policy dates
     filtered_at_risk_df = at_risk_df.copy()
     if not filtered_at_risk_df.empty:
-        # If START_DATE was not present in in-memory cache, map exact verified Snowflake dates
-        if "START_DATE" not in filtered_at_risk_df.columns:
-            try:
-                import json
-                vf_path = os.path.join(os.path.dirname(__file__), "at_risk_policies_verified.json")
-                if os.path.exists(vf_path):
-                    with open(vf_path, "r") as f:
-                        v_records = json.load(f)
-                    v_df = pd.DataFrame(v_records)
-                    date_map = dict(zip(v_df["POLICY_ID"], v_df["START_DATE"]))
-                    filtered_at_risk_df["START_DATE"] = filtered_at_risk_df["POLICY_ID"].map(date_map)
-                    at_risk_df["START_DATE"] = at_risk_df["POLICY_ID"].map(date_map)
-                    if "REV_AT_RISK" in v_df.columns:
-                        rev_map = dict(zip(v_df["POLICY_ID"], v_df["REV_AT_RISK"]))
-                        filtered_at_risk_df["REV_AT_RISK"] = filtered_at_risk_df["POLICY_ID"].map(rev_map)
-                        at_risk_df["REV_AT_RISK"] = at_risk_df["POLICY_ID"].map(rev_map)
-                    if "ACTION" in v_df.columns:
-                        action_map = dict(zip(v_df["POLICY_ID"], v_df["ACTION"]))
-                        filtered_at_risk_df["ACTION"] = filtered_at_risk_df["POLICY_ID"].map(action_map)
-                        at_risk_df["ACTION"] = at_risk_df["POLICY_ID"].map(action_map)
-            except Exception:
-                pass
-
         date_col = None
         for col in ["START_DATE", "IDENTIFIED_DATE", "CREATED_AT"]:
             if col in filtered_at_risk_df.columns:

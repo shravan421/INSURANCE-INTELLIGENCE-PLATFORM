@@ -53,7 +53,6 @@ risk-pricing-dashboard/
 │
 ├── app.py                           # Main Streamlit application and dashboard UI
 ├── snowflake_utils.py               # Snowflake connection manager & live SQL query functions
-├── at_risk_policies_verified.json   # Offline JSON fallback dataset for risk analysis
 ├── test_env.py                      # Environment variable & Snowflake connection validation script
 │
 ├── requirements.txt                 # Project Python package dependencies
@@ -127,7 +126,7 @@ The application authenticates securely to Snowflake using parameters loaded via 
 
 - Connection settings are dynamically read using `os.getenv()`.
 - Credentials remain strictly local to your machine.
-- If Snowflake is unavailable or credentials are missing, the application safely falls back to local cached dataset (`at_risk_policies_verified.json`) for seamless local testing.
+- All policy, claims, loss ratio, and analytics queries run strictly live against your Snowflake Data Cloud tables.
 
 ---
 
