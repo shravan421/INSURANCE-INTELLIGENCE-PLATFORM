@@ -1,0 +1,2702 @@
+[
+  {
+    "POLICY_ID": "POL-00007",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.95,
+    "REV_AT_RISK": 4116.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-07-29",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00165",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.95,
+    "REV_AT_RISK": 3393.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-10-18",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00214",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.95,
+    "REV_AT_RISK": 9968.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-06-09",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00008",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.94,
+    "REV_AT_RISK": 8783.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-04-25",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00012",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.94,
+    "REV_AT_RISK": 9534.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-11-24",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00117",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.94,
+    "REV_AT_RISK": 12268.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-08-23",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00137",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.94,
+    "REV_AT_RISK": 7837.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-12-22",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00082",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.94,
+    "REV_AT_RISK": 9271.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-05-02",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00091",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.94,
+    "REV_AT_RISK": 13770.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-02-01",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00277",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.93,
+    "REV_AT_RISK": 12650.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-10-31",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00051",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.93,
+    "REV_AT_RISK": 11106.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-04-07",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00148",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.93,
+    "REV_AT_RISK": 8459.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-02-25",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00090",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.92,
+    "REV_AT_RISK": 5846.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-01-09",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00288",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.92,
+    "REV_AT_RISK": 2194.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-04-24",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00019",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.92,
+    "REV_AT_RISK": 2972.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-07-30",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00206",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.91,
+    "REV_AT_RISK": 4561.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-11-18",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00174",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.91,
+    "REV_AT_RISK": 7660.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-04-29",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00263",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.91,
+    "REV_AT_RISK": 9893.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-03-04",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00000",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.91,
+    "REV_AT_RISK": 4583.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-11-15",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00021",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.9,
+    "REV_AT_RISK": 5315.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-10-16",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00052",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.9,
+    "REV_AT_RISK": 5229.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-11-28",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00297",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.9,
+    "REV_AT_RISK": 11723.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-07-18",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00161",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.9,
+    "REV_AT_RISK": 7365.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-11-12",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00158",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.9,
+    "REV_AT_RISK": 5832.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-10-10",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00269",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.9,
+    "REV_AT_RISK": 4624.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-06-01",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00118",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.9,
+    "REV_AT_RISK": 13465.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-12-06",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00084",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.9,
+    "REV_AT_RISK": 14819.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-05-12",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00273",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.9,
+    "REV_AT_RISK": 5151.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-06-18",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00276",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.89,
+    "REV_AT_RISK": 3716.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-09-22",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00032",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.89,
+    "REV_AT_RISK": 14075.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-10-28",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00182",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.89,
+    "REV_AT_RISK": 10226.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-10-30",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00105",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.88,
+    "REV_AT_RISK": 942.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-05-06",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00265",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.88,
+    "REV_AT_RISK": 1266.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-03-16",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00085",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.88,
+    "REV_AT_RISK": 13242.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-05-12",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00075",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.88,
+    "REV_AT_RISK": 906.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-04-24",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00239",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.87,
+    "REV_AT_RISK": 4577.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-11-26",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00001",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.86,
+    "REV_AT_RISK": 3022.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-06-17",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00236",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.86,
+    "REV_AT_RISK": 9669.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-03-20",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00264",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.85,
+    "REV_AT_RISK": 5970.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-10-31",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00040",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.85,
+    "REV_AT_RISK": 4908.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-07-02",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00088",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.85,
+    "REV_AT_RISK": 11388.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-10-06",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00003",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.84,
+    "REV_AT_RISK": 6180.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-06-09",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00010",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.84,
+    "REV_AT_RISK": 14096.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-07-02",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00038",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.83,
+    "REV_AT_RISK": 9307.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-12-12",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00116",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.83,
+    "REV_AT_RISK": 4991.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-06-07",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00222",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.83,
+    "REV_AT_RISK": 12664.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-10-06",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00181",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.83,
+    "REV_AT_RISK": 12566.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-07-08",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00104",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.82,
+    "REV_AT_RISK": 3967.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-01-31",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00245",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.82,
+    "REV_AT_RISK": 9501.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-08-26",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00164",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.82,
+    "REV_AT_RISK": 7108.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-04-19",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00205",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.82,
+    "REV_AT_RISK": 7302.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-05-07",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00153",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.82,
+    "REV_AT_RISK": 12511.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-06-17",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00223",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.81,
+    "REV_AT_RISK": 7224.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-01-20",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00049",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.81,
+    "REV_AT_RISK": 5239.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-10-20",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00016",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.8,
+    "REV_AT_RISK": 5327.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-04-20",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00146",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.8,
+    "REV_AT_RISK": 11063.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-04-17",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00169",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.79,
+    "REV_AT_RISK": 9614.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-05-26",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00292",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.79,
+    "REV_AT_RISK": 1585.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-02-13",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00061",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.79,
+    "REV_AT_RISK": 8928.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-10-02",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00029",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.79,
+    "REV_AT_RISK": 5615.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-09-21",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00180",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.79,
+    "REV_AT_RISK": 8057.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-12-07",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00071",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.79,
+    "REV_AT_RISK": 7639.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-10-20",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00216",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.79,
+    "REV_AT_RISK": 11680.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-01-27",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00157",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.78,
+    "REV_AT_RISK": 7147.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-11-05",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00018",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.78,
+    "REV_AT_RISK": 942.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-09-30",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00186",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.78,
+    "REV_AT_RISK": 10483.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-09-27",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00059",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.78,
+    "REV_AT_RISK": 3976.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-05-17",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00074",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.78,
+    "REV_AT_RISK": 6670.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-04-30",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00280",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.78,
+    "REV_AT_RISK": 924.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-10-03",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00133",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.78,
+    "REV_AT_RISK": 9798.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-01-16",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00289",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.78,
+    "REV_AT_RISK": 13493.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-07-10",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00218",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.78,
+    "REV_AT_RISK": 7043.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-02-03",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00228",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.78,
+    "REV_AT_RISK": 1263.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-01-21",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00230",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.77,
+    "REV_AT_RISK": 12350.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-02-01",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00144",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.77,
+    "REV_AT_RISK": 4773.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-05-14",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00198",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.77,
+    "REV_AT_RISK": 10483.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-04-17",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00246",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.77,
+    "REV_AT_RISK": 3070.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-12-12",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00140",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.77,
+    "REV_AT_RISK": 5269.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-02-11",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00231",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.76,
+    "REV_AT_RISK": 1299.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-09-16",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00083",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.76,
+    "REV_AT_RISK": 11791.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-09-02",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00100",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.75,
+    "REV_AT_RISK": 11920.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-05-03",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00066",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.75,
+    "REV_AT_RISK": 5491.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-02-18",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00167",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.75,
+    "REV_AT_RISK": 1961.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-09-27",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00047",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.75,
+    "REV_AT_RISK": 5216.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-11-22",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00278",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.75,
+    "REV_AT_RISK": 9682.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-08-18",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00127",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.75,
+    "REV_AT_RISK": 6594.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-10-31",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00138",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.74,
+    "REV_AT_RISK": 13677.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-02-27",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00098",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.74,
+    "REV_AT_RISK": 9778.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-09-15",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00221",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.74,
+    "REV_AT_RISK": 7016.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-02-04",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00080",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.73,
+    "REV_AT_RISK": 3246.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-05-09",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00203",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.73,
+    "REV_AT_RISK": 2110.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-04-14",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00295",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.73,
+    "REV_AT_RISK": 2824.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-03-06",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00056",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.73,
+    "REV_AT_RISK": 1051.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-02-19",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00271",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.72,
+    "REV_AT_RISK": 5054.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-05-31",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00128",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.72,
+    "REV_AT_RISK": 12290.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-08-30",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00145",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.72,
+    "REV_AT_RISK": 9676.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-08-25",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00028",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.71,
+    "REV_AT_RISK": 6370.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-09-15",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00039",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.71,
+    "REV_AT_RISK": 6489.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-10-19",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00156",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.71,
+    "REV_AT_RISK": 13747.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-05-18",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00027",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.71,
+    "REV_AT_RISK": 507.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-12-29",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00201",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.71,
+    "REV_AT_RISK": 12077.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2024-08-31",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00194",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.71,
+    "REV_AT_RISK": 11804.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-04-05",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00152",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.71,
+    "REV_AT_RISK": 930.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2026-05-14",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00110",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.71,
+    "REV_AT_RISK": 975.0,
+    "ACTION": "Retention outreach",
+    "START_DATE": "2025-10-01",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00046",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.7,
+    "REV_AT_RISK": 8037.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-09-30",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00037",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.7,
+    "REV_AT_RISK": 13447.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-03-28",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00042",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.7,
+    "REV_AT_RISK": 9440.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-10-24",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00262",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.7,
+    "REV_AT_RISK": 1226.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-06-20",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00256",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.7,
+    "REV_AT_RISK": 7164.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-09-24",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00009",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.7,
+    "REV_AT_RISK": 3314.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-08-26",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00095",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.69,
+    "REV_AT_RISK": 6358.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-01-24",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00270",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.69,
+    "REV_AT_RISK": 2823.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-12-13",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00185",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.69,
+    "REV_AT_RISK": 13254.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-09-27",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00220",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.69,
+    "REV_AT_RISK": 5621.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-02-10",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00226",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.68,
+    "REV_AT_RISK": 2828.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-01-13",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00130",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.68,
+    "REV_AT_RISK": 13010.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-11-07",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00034",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.68,
+    "REV_AT_RISK": 984.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-08-20",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00248",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.68,
+    "REV_AT_RISK": 4246.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-10-10",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00217",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.68,
+    "REV_AT_RISK": 594.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-03-21",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00026",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.68,
+    "REV_AT_RISK": 1413.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-01-08",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00232",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.68,
+    "REV_AT_RISK": 3019.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-04-07",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00298",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.67,
+    "REV_AT_RISK": 9018.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-10-04",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00081",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.67,
+    "REV_AT_RISK": 14911.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-05-03",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00136",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.67,
+    "REV_AT_RISK": 2742.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-05-13",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00261",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.67,
+    "REV_AT_RISK": 1985.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-09-28",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00141",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.66,
+    "REV_AT_RISK": 2947.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-02-10",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00033",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.66,
+    "REV_AT_RISK": 4668.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-05-25",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00215",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.65,
+    "REV_AT_RISK": 9214.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-12-22",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00013",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.65,
+    "REV_AT_RISK": 14381.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-05-23",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00129",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.65,
+    "REV_AT_RISK": 3488.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-09-14",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00163",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.65,
+    "REV_AT_RISK": 10905.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-05-13",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00006",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.65,
+    "REV_AT_RISK": 8528.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-02-26",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00196",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.65,
+    "REV_AT_RISK": 8886.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-08-21",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00183",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.65,
+    "REV_AT_RISK": 3012.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-06-08",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00143",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.64,
+    "REV_AT_RISK": 11753.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-06-23",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00069",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.64,
+    "REV_AT_RISK": 13859.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-12-14",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00211",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.64,
+    "REV_AT_RISK": 13844.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-12-12",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00293",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.64,
+    "REV_AT_RISK": 4983.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-10-14",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00150",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.64,
+    "REV_AT_RISK": 5004.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-04-30",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00017",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.63,
+    "REV_AT_RISK": 14394.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-08-04",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00207",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.63,
+    "REV_AT_RISK": 14084.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-02-25",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00243",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.63,
+    "REV_AT_RISK": 13341.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-01-15",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00224",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.63,
+    "REV_AT_RISK": 5768.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-09-29",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00004",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.62,
+    "REV_AT_RISK": 2863.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-11-10",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00184",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.62,
+    "REV_AT_RISK": 8115.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-05-28",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00240",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.62,
+    "REV_AT_RISK": 13633.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-05-21",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00022",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.61,
+    "REV_AT_RISK": 11952.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-04-12",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00102",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.61,
+    "REV_AT_RISK": 14604.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-11-21",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00043",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.6,
+    "REV_AT_RISK": 9364.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-02-02",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00063",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.59,
+    "REV_AT_RISK": 7458.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-03-06",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00268",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.58,
+    "REV_AT_RISK": 1662.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-04-26",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00079",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.58,
+    "REV_AT_RISK": 3578.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-10-27",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00030",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.57,
+    "REV_AT_RISK": 10048.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-07-06",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00054",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.57,
+    "REV_AT_RISK": 13799.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-01-22",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00281",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.57,
+    "REV_AT_RISK": 14144.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-10-23",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00177",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.56,
+    "REV_AT_RISK": 7230.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-11-03",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00162",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.56,
+    "REV_AT_RISK": 12557.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-06-29",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00134",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.55,
+    "REV_AT_RISK": 2498.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-05-27",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00011",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.55,
+    "REV_AT_RISK": 11879.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-02-26",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00131",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.55,
+    "REV_AT_RISK": 13881.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-08-26",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00283",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.55,
+    "REV_AT_RISK": 10326.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-01-28",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00058",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.55,
+    "REV_AT_RISK": 4750.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-03-07",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00108",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.54,
+    "REV_AT_RISK": 14729.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-06-29",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00045",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.54,
+    "REV_AT_RISK": 10609.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-08-20",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00103",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.54,
+    "REV_AT_RISK": 8664.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-07-17",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00107",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.53,
+    "REV_AT_RISK": 9413.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-04-16",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00060",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.53,
+    "REV_AT_RISK": 5215.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-04-25",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00272",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.53,
+    "REV_AT_RISK": 8869.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-03-15",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00099",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.53,
+    "REV_AT_RISK": 1177.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-05-02",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00244",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.53,
+    "REV_AT_RISK": 1647.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-11-22",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00106",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.53,
+    "REV_AT_RISK": 4869.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-06-04",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00093",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.53,
+    "REV_AT_RISK": 2140.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-11-19",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00155",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.53,
+    "REV_AT_RISK": 14127.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-07-14",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00121",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.52,
+    "REV_AT_RISK": 14829.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-02-05",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00279",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.51,
+    "REV_AT_RISK": 7402.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-01-03",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00132",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.51,
+    "REV_AT_RISK": 13803.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-10-05",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00188",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.5,
+    "REV_AT_RISK": 8863.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-03-17",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00031",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.5,
+    "REV_AT_RISK": 4540.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-04-04",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00055",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.5,
+    "REV_AT_RISK": 10683.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-06-12",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00287",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.5,
+    "REV_AT_RISK": 8907.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-06-14",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00086",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.49,
+    "REV_AT_RISK": 8352.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-08-31",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00258",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.49,
+    "REV_AT_RISK": 539.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-08-27",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00227",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.48,
+    "REV_AT_RISK": 11295.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-09-15",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00015",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.48,
+    "REV_AT_RISK": 514.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-02-11",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00048",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.48,
+    "REV_AT_RISK": 7855.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-02-08",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00233",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.48,
+    "REV_AT_RISK": 5523.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-09-11",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00077",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.47,
+    "REV_AT_RISK": 7889.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-07-04",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00285",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.46,
+    "REV_AT_RISK": 5736.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-05-25",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00189",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.46,
+    "REV_AT_RISK": 2636.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-01-18",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00147",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.45,
+    "REV_AT_RISK": 6638.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-07-29",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00166",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.45,
+    "REV_AT_RISK": 8451.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-11-16",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00120",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.45,
+    "REV_AT_RISK": 4185.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-12-24",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00195",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.45,
+    "REV_AT_RISK": 2420.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-11-24",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00062",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.45,
+    "REV_AT_RISK": 12016.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-08-20",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00073",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.44,
+    "REV_AT_RISK": 4500.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-10-28",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00229",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.44,
+    "REV_AT_RISK": 4235.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-03-14",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00172",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.44,
+    "REV_AT_RISK": 8033.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-06-24",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00097",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.44,
+    "REV_AT_RISK": 13159.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-06-26",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00078",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.44,
+    "REV_AT_RISK": 2610.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-09-06",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00241",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.43,
+    "REV_AT_RISK": 3471.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-04-07",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00094",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.43,
+    "REV_AT_RISK": 2358.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-10-23",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00113",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.42,
+    "REV_AT_RISK": 9210.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-05-11",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00112",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.42,
+    "REV_AT_RISK": 5368.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-04-23",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00260",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.42,
+    "REV_AT_RISK": 8337.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-09-22",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00070",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.42,
+    "REV_AT_RISK": 12934.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-01-29",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00267",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.41,
+    "REV_AT_RISK": 12832.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-09-02",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00023",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.41,
+    "REV_AT_RISK": 14914.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-10-01",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00115",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.41,
+    "REV_AT_RISK": 10476.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-08-04",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00089",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.4,
+    "REV_AT_RISK": 2630.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-05-16",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00290",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.4,
+    "REV_AT_RISK": 10051.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-10-06",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00005",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.4,
+    "REV_AT_RISK": 11788.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-02-08",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00142",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.39,
+    "REV_AT_RISK": 14705.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-03-06",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00294",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.39,
+    "REV_AT_RISK": 4359.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-04-03",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00014",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.39,
+    "REV_AT_RISK": 13671.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-01-22",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00200",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.38,
+    "REV_AT_RISK": 7747.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-05-28",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00235",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.38,
+    "REV_AT_RISK": 9118.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-01-11",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00199",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.38,
+    "REV_AT_RISK": 9177.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-11-19",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00234",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.37,
+    "REV_AT_RISK": 9782.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-01-25",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00274",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.37,
+    "REV_AT_RISK": 13683.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-08-01",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00126",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.37,
+    "REV_AT_RISK": 2006.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-03-09",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00135",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.37,
+    "REV_AT_RISK": 769.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-12-20",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00266",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.37,
+    "REV_AT_RISK": 1133.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-03-27",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00114",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.37,
+    "REV_AT_RISK": 1503.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-06-22",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00101",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.37,
+    "REV_AT_RISK": 6402.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-09-10",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00036",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.37,
+    "REV_AT_RISK": 7483.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-09-05",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00171",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.36,
+    "REV_AT_RISK": 8155.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-06-24",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00192",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.36,
+    "REV_AT_RISK": 6126.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-05-02",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00175",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.36,
+    "REV_AT_RISK": 2666.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-03-25",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00219",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.36,
+    "REV_AT_RISK": 5849.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-04-05",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00213",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.36,
+    "REV_AT_RISK": 11225.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-08-28",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00149",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.36,
+    "REV_AT_RISK": 9064.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-12-03",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00237",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.36,
+    "REV_AT_RISK": 9778.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-07-18",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00193",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.35,
+    "REV_AT_RISK": 7923.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-04-14",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00096",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.34,
+    "REV_AT_RISK": 4487.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-11-03",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00068",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.33,
+    "REV_AT_RISK": 796.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-08-04",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00225",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.33,
+    "REV_AT_RISK": 13389.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-04-08",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00187",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.32,
+    "REV_AT_RISK": 3708.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-12-11",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00125",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.32,
+    "REV_AT_RISK": 1984.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-01-04",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00238",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.32,
+    "REV_AT_RISK": 7012.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-03-02",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00291",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.31,
+    "REV_AT_RISK": 4856.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-11-19",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00282",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.31,
+    "REV_AT_RISK": 1910.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-04-25",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00159",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.3,
+    "REV_AT_RISK": 2074.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-08-08",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00035",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.3,
+    "REV_AT_RISK": 7255.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-01-02",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00259",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.3,
+    "REV_AT_RISK": 2783.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-05-18",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00247",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.3,
+    "REV_AT_RISK": 7856.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-01-18",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00179",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.28,
+    "REV_AT_RISK": 8793.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-11-13",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00065",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.28,
+    "REV_AT_RISK": 5036.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-11-05",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00160",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.28,
+    "REV_AT_RISK": 11837.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-03-10",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00204",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.27,
+    "REV_AT_RISK": 13706.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-03-30",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00170",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.27,
+    "REV_AT_RISK": 7778.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-04-21",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00168",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.27,
+    "REV_AT_RISK": 1547.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-05-14",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00286",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.27,
+    "REV_AT_RISK": 12526.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-09-08",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00212",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.27,
+    "REV_AT_RISK": 1738.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-11-09",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00072",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.27,
+    "REV_AT_RISK": 14663.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-05-08",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00057",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.27,
+    "REV_AT_RISK": 14967.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-02-24",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00208",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.26,
+    "REV_AT_RISK": 5946.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-04-24",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00202",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.26,
+    "REV_AT_RISK": 3819.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-11-01",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00087",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.26,
+    "REV_AT_RISK": 12480.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-10-01",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00053",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.26,
+    "REV_AT_RISK": 984.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-07-02",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00299",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.26,
+    "REV_AT_RISK": 7964.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-10-17",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00296",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.26,
+    "REV_AT_RISK": 6471.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-12-27",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00173",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.26,
+    "REV_AT_RISK": 5437.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-05-27",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00020",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.26,
+    "REV_AT_RISK": 12693.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-08-25",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00242",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.26,
+    "REV_AT_RISK": 11776.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-03-27",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00076",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.25,
+    "REV_AT_RISK": 7766.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-02-28",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00284",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.25,
+    "REV_AT_RISK": 8269.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-11-18",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00025",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.25,
+    "REV_AT_RISK": 14749.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-05-14",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00119",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.24,
+    "REV_AT_RISK": 6691.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-06-14",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00123",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.24,
+    "REV_AT_RISK": 5047.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-08-20",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00050",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.23,
+    "REV_AT_RISK": 7827.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-11-17",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00253",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.23,
+    "REV_AT_RISK": 11842.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-02-03",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00257",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.21,
+    "REV_AT_RISK": 10514.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-11-01",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00109",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.21,
+    "REV_AT_RISK": 9760.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-05-17",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00252",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.21,
+    "REV_AT_RISK": 14293.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-09-14",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00275",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.21,
+    "REV_AT_RISK": 8975.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-01-24",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00176",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.21,
+    "REV_AT_RISK": 3759.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-05-13",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00092",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.2,
+    "REV_AT_RISK": 8216.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-12-20",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00249",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.2,
+    "REV_AT_RISK": 10623.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-06-10",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00064",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.2,
+    "REV_AT_RISK": 14265.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-07-13",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00151",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.2,
+    "REV_AT_RISK": 11269.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-08-09",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00041",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.19,
+    "REV_AT_RISK": 7558.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-09-16",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00209",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.19,
+    "REV_AT_RISK": 13928.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-07-13",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00190",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.19,
+    "REV_AT_RISK": 14891.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-08-30",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00197",
+    "CATEGORY": "Auto",
+    "RISK_SCORE": 0.18,
+    "REV_AT_RISK": 10643.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-08-24",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00250",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.18,
+    "REV_AT_RISK": 7172.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-08-30",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00255",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.18,
+    "REV_AT_RISK": 11681.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-02-28",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00154",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.18,
+    "REV_AT_RISK": 9088.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-08-09",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00210",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.17,
+    "REV_AT_RISK": 5617.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-09-19",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00111",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.17,
+    "REV_AT_RISK": 13740.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-01-01",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00002",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.17,
+    "REV_AT_RISK": 12844.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-11-19",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00139",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.17,
+    "REV_AT_RISK": 10711.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-06-26",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00191",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.17,
+    "REV_AT_RISK": 14794.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-05-17",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00254",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.17,
+    "REV_AT_RISK": 3892.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-01-13",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00251",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.17,
+    "REV_AT_RISK": 7647.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-11-02",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00067",
+    "CATEGORY": "Home",
+    "RISK_SCORE": 0.16,
+    "REV_AT_RISK": 1798.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2024-12-13",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00122",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.16,
+    "REV_AT_RISK": 3438.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-04-23",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00124",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.15,
+    "REV_AT_RISK": 3225.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-04-05",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00044",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.15,
+    "REV_AT_RISK": 10711.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2026-02-21",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00178",
+    "CATEGORY": "Life",
+    "RISK_SCORE": 0.15,
+    "REV_AT_RISK": 14878.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-06-28",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  },
+  {
+    "POLICY_ID": "POL-00024",
+    "CATEGORY": "Health",
+    "RISK_SCORE": 0.15,
+    "REV_AT_RISK": 14075.0,
+    "ACTION": "Standard Monitoring",
+    "START_DATE": "2025-04-21",
+    "CREATED_AT": "2026-08-17 00:26:48.768000"
+  }
+]
