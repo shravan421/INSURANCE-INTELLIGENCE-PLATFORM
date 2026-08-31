@@ -76,7 +76,7 @@ risk-pricing-dashboard/
 
 ### 1. Clone the Repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/shravan421/INSURANCE-INTELLIGENCE-PLATFORM.git
 cd risk-pricing-dashboard
 ```
 
@@ -196,7 +196,7 @@ For teammates opening this project in VS Code:
 
 1. Clone and open project:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/shravan421/INSURANCE-INTELLIGENCE-PLATFORM.git
    cd risk-pricing-dashboard
    code .
    ```
