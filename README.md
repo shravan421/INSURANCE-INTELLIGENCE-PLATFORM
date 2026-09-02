@@ -1,34 +1,53 @@
-# Risk & Pricing Dashboard
+# Insurance Intelligence Platform
 
-An enterprise-grade, data-driven **Risk & Pricing Dashboard** built with **Python**, **Streamlit**, **Snowflake**, and **Plotly**. Designed for underwriters, risk managers, actuarial analysts, and insurance executives to perform real-time risk assessment, loss ratio monitoring, claims analysis, and interactive pricing simulation.
+An enterprise-grade, data-driven **Insurance Intelligence Platform** built with **Python**, **Streamlit**, **Snowflake (Cortex AI & Data Cloud)**, and **Plotly**. Designed for underwriters, risk managers, actuarial analysts, and insurance executives to perform real-time policy book underwriting, AI-powered claims triage with visual damage image analysis, loss ratio monitoring, and dynamic predictive pricing simulation.
 
 ---
 
 ## 📋 Table of Contents
-1. [Project Overview](#project-overview)
-2. [Technology Stack](#technology-stack)
-3. [Project Directory Structure](#project-directory-structure)
-4. [Prerequisites](#prerequisites)
-5. [Setup & Installation](#setup--installation)
-6. [Environment Configuration](#environment-configuration)
-7. [Snowflake Configuration](#snowflake-configuration)
-8. [Run Application](#run-application)
-9. [Testing](#testing)
-10. [Team Git Workflow](#team-git-workflow)
-11. [VS Code Team Quickstart](#vs-code-team-quickstart)
-12. [Security Best Practices](#security-best-practices)
+1. [Project Overview](#-project-overview)
+2. [Key Platform Capabilities & Recent Updates](#-key-platform-capabilities--recent-updates)
+3. [Technology Stack](#-technology-stack)
+4. [Project Directory Structure](#-project-directory-structure)
+5. [Prerequisites](#-prerequisites)
+6. [Setup & Installation](#-setup--installation)
+7. [Environment Configuration](#-environment-configuration)
+8. [Snowflake Configuration](#-snowflake-configuration)
+9. [Run Application](#-run-application)
+10. [Testing](#-testing)
+11. [Team Git Workflow](#-team-git-workflow)
+12. [VS Code Team Quickstart](#-vs-code-team-quickstart)
+13. [Security Best Practices](#-security-best-practices)
 
 ---
 
 ## 🎯 Project Overview
 
-The **Risk & Pricing Dashboard** provides live intelligence and analytical decision-support for enterprise insurance operations. Key capabilities include:
+The **Insurance Intelligence Platform** provides live intelligence and analytical decision-support for enterprise insurance operations across underwriting, claims investigation, actuarial modeling, and conversational AI assistance.
 
-- **Executive KPI Suite**: Live tracking of Gross Written Premium (GWP), Claims Paid, Loss Ratio (%), and Total Active Policies.
-- **Underwriting & Risk Workbench**: Scoring policy risks, reviewing plan tiers, and monitoring high-risk portfolios.
-- **Claims & Fraud Monitoring**: Tracking claims adjudication, anomaly scores, and detailed investigation notes.
-- **Actuarial Rate Modeling**: Interactive rate adjustments and loss ratio scenario planning.
-- **Snowflake Cortex AI Assistant**: Natural language querying for policy analytical inquiries.
+Key modules include:
+- **Underwriting Workbench**: Real-time policy book management, live Snowflake policy dataset auditing (300 live records), dynamic predictive ML premium quoting, and interactive actuarial rate driver calculations.
+- **Claims & Fraud Console**: AI-powered claims triage, fraud risk scoring, automated SIU escalation workflows, and Cortex semantic search over investigation notes.
+- **AI Chat Assistant (Cortex Powered)**: ChatGPT-style conversational assistant with inline image/damage file attachments, persistent chat history, and live Cortex Agent (`INSURANCE_MASTER_AGENT`) execution.
+- **Actuarial Rate Modeling**: Interactive rate adjustments, combined ratio scenario planning, and loss ratio trend monitoring.
+
+---
+
+## ⚡ Key Platform Capabilities & Recent Updates
+
+### 🖼️ AI Chat Assistant with Visual Damage & Document Uploads
+- **Inline Image & File Attachments**: Underwriters and claims adjusters can upload vehicle damage photos, structural property damage images, or claim PDFs directly inside the chat console.
+- **Visual Claim Triage**: Attach damage images alongside prompt inquiries to evaluate claim context, estimate repair severity, and trigger automated fraud risk assessments.
+- **ChatGPT-Style UX**: Modern responsive interface with persistent conversation history, model thinking process drawer, and smooth streaming responses.
+
+### 🛡️ Audited Live Snowflake Data Integration
+- **Verified Policy Book**: 100% verified live query execution against `INSURANCE_MGMT_SYSTEM.GOLD.FACT_POLICY` (300 live policy rows).
+- **Accurate Real-Time KPIs**:
+  - **Total Policies**: `300`
+  - **Active Book**: `180`
+  - **Total Premium Volume**: `$2,320,783`
+  - **Average Premium**: `$7,735.94`
+- **Dynamic Predictive ML Quoting**: Dynamic premium valuation computed in real time via Snowflake SQL predictive algorithms with reactive actuarial rate multipliers (Credit Score, Age, Coverage Exposure).
 
 ---
 
@@ -37,6 +56,7 @@ The **Risk & Pricing Dashboard** provides live intelligence and analytical decis
 - **Core Runtime**: Python 3.9+
 - **Web Application Framework**: [Streamlit](https://streamlit.io/) (v1.30.0+)
 - **Data Platform**: [Snowflake Data Cloud](https://www.snowflake.com/) (`snowflake-connector-python`)
+- **AI & Data Agents**: Snowflake Cortex AI (`SNOWFLAKE.CORTEX.DATA_AGENT_RUN`)
 - **Data Analytics & Processing**: [Pandas](https://pandas.pydata.org/)
 - **Data Visualization**: [Plotly](https://plotly.com/) (Express & Graph Objects)
 - **Environment Management**: `python-dotenv`
@@ -46,13 +66,13 @@ The **Risk & Pricing Dashboard** provides live intelligence and analytical decis
 ## 📁 Project Directory Structure
 
 ```text
-risk-pricing-dashboard/
+INSURANCE-INTELLIGENCE-PLATFORM/
 │
 ├── .streamlit/
 │   └── config.toml                  # Streamlit layout theme and visual settings
 │
-├── app.py                           # Main Streamlit application and dashboard UI
-├── snowflake_utils.py               # Snowflake connection manager & live SQL query functions
+├── app.py                           # Main Streamlit application and platform UI
+├── snowflake_utils.py               # Snowflake connection manager, Cortex agent, & live SQL queries
 ├── test_env.py                      # Environment variable & Snowflake connection validation script
 │
 ├── requirements.txt                 # Project Python package dependencies
@@ -76,7 +96,7 @@ risk-pricing-dashboard/
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/shravan421/INSURANCE-INTELLIGENCE-PLATFORM.git
-cd risk-pricing-dashboard
+cd INSURANCE-INTELLIGENCE-PLATFORM
 ```
 
 ### 2. Create Virtual Environment
@@ -127,6 +147,7 @@ The application authenticates securely to Snowflake using parameters loaded via 
 - Connection settings are dynamically read using `os.getenv()`.
 - Credentials remain strictly local to your machine.
 - All policy, claims, loss ratio, and analytics queries run strictly live against your Snowflake Data Cloud tables.
+- Conversational queries invoke Snowflake Cortex Data Agent (`INSURANCE_MGMT_SYSTEM.GOLD.INSURANCE_MASTER_AGENT`).
 
 ---
 
@@ -159,10 +180,10 @@ If configured correctly, it will print confirmation that environment variables w
 We follow a branch-based Git workflow. Direct commits to `main` are restricted.
 
 ### Branch Naming Conventions
-- `feature/risk-dashboard`
-- `feature/pricing-dashboard`
+- `feature/insurance-intelligence`
+- `feature/damage-image-attachments`
+- `feature/underwriting-workbench`
 - `feature/snowflake-integration`
-- `bugfix/dashboard-filter`
 - `feature/<developer-name>`
 
 ### Standard Development Workflow
@@ -185,7 +206,7 @@ We follow a branch-based Git workflow. Direct commits to `main` are restricted.
    ```bash
    git push -u origin feature/your-feature-name
    ```
-5. **Create Pull Request**: Open a PR on GitHub targetting `main` for code review.
+5. **Create Pull Request**: Open a PR on GitHub targeting `main` for code review.
 
 ---
 
@@ -196,7 +217,7 @@ For teammates opening this project in VS Code:
 1. Clone and open project:
    ```bash
    git clone https://github.com/shravan421/INSURANCE-INTELLIGENCE-PLATFORM.git
-   cd risk-pricing-dashboard
+   cd INSURANCE-INTELLIGENCE-PLATFORM
    code .
    ```
 2. Create and activate virtual environment:
