@@ -1,4 +1,5 @@
 import os
+import time
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -7,6 +8,12 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 import snowflake_utils as sf
+
+def _typewriter(text):
+    """Yield words for st.write_stream typewriter effect."""
+    for i, word in enumerate(text.split(" ")):
+        yield word + (" " if i < len(text.split(" ")) - 1 else "")
+        time.sleep(0.02)
 
 # Load environment variables
 load_dotenv()
@@ -958,20 +965,23 @@ def render_sidebar():
                 "🛡️ Claims & Fraud Console",
                 "📈 Risk & Pricing Dashboard",
                 "📊 Customer 360",
+                "🎯 Product Matching",
+                "📊 Market Intelligence",
+                "💰 Competitive Pricing",
                 "💬 Chat Assistant"
             ],
             index=0,
             label_visibility="collapsed"
         )
 
-        # Check current connection status or session state
-        is_connected = st.session_state.get("mfa_state") == "CONNECTED"
+        # Check direct connection status
+        is_connected = st.session_state.get("sf_connected", False)
         if not is_connected:
             try:
-                conn = sf.get_connection()
-                if conn and not conn.is_closed():
+                val_res = sf.validate_connection()
+                if val_res.get("valid"):
                     is_connected = True
-                    st.session_state["mfa_state"] = "CONNECTED"
+                    st.session_state["sf_connected"] = True
             except Exception:
                 pass
 
@@ -1012,24 +1022,22 @@ def render_sidebar():
         return selected_page
 
 
-# Helper to render clean MFA authentication error prompt (redacts raw Snowflake errors)
+# Helper to render clean authentication error prompt (redacts raw Snowflake errors)
 def render_snowflake_error(e, context="Snowflake"):
     err_str = str(e)
-    st.session_state["mfa_state"] = "AUTHENTICATION_FAILED"
-    st.session_state.pop("snowflake_passcode", None)
+    st.session_state["sf_connected"] = False
     
     try:
         st.cache_resource.clear()
     except Exception:
         pass
 
-    # Server side log for debugging (sanitized/redacted)
     print(f"[SECURITY REDACTED LOG] {context} Exception occurred during database query.")
 
     if "394512" in err_str or "too many failed" in err_str.lower() or "locked" in err_str.lower():
-        st.warning("⚠️ Snowflake MFA is temporarily locked after multiple failed attempts. Please wait a few minutes and try again.")
-    elif any(k in err_str.lower() for k in ["totp", "mfa with totp is required", "passcode", "394508", "394633", "failed to authenticate"]):
-        st.warning("⚠️ Snowflake authentication required. Please enter your 6-digit MFA passcode in your terminal.")
+        st.warning("⚠️ Account is temporarily locked after multiple failed attempts. Please wait a few minutes and restart the app.")
+    elif any(k in err_str.lower() for k in ["incorrect username or password", "failed to authenticate", "394508", "394633"]):
+        st.warning("⚠️ Snowflake authentication failed. Please restart the app and enter the correct credentials.")
     else:
         st.warning(f"⚠️ {context} data is currently unavailable. Please verify connection.")
 
@@ -1038,189 +1046,1310 @@ def render_snowflake_error(e, context="Snowflake"):
 # MAIN APP ENTRYPOINT
 # =========================================================================
 render_header()
-st.session_state["_mfa_prompt_shown"] = False
+if "sf_connected" not in st.session_state:
+    val_init = sf.validate_connection()
+    st.session_state["sf_connected"] = val_init.get("valid", False)
 selected_tab = render_sidebar()
 
 # =========================================================================
 # TAB 1: UNDERWRITING WORKBENCH
 # =========================================================================
 if "Underwriting Workbench" in selected_tab:
-    st.markdown("### 🛡️ Underwriting Workbench")
-    st.caption("Real-time policy book management, risk scoring, and ML-powered automated premium quoting.")
-    
-    # Live Data Fetch
-    df_policies = pd.DataFrame()
-    try:
-        df_policies = sf.get_policies_data()
-    except Exception as e:
-        render_snowflake_error(e, "Snowflake Policy Book")
 
-    # Top KPI Metrics Row
-    if not df_policies.empty:
-        kpi_col1, kpi_col2, kpi_col3, kpi_col4 = st.columns(4)
-        total_policies = len(df_policies)
-        
-        # Calculate active policies
-        active_count = len(df_policies[df_policies["STATUS"].astype(str).str.upper() == "ACTIVE"]) if "STATUS" in df_policies.columns else total_policies
-        
-        # Calculate total and avg premium
-        if "PREMIUM" in df_policies.columns:
-            total_premium = pd.to_numeric(df_policies["PREMIUM"], errors="coerce").sum()
-            avg_premium = pd.to_numeric(df_policies["PREMIUM"], errors="coerce").mean()
-        else:
-            total_premium = 0
-            avg_premium = 0
-
-        with kpi_col1:
-            st.markdown(f"""
-            <div class="kpi-card">
-                <div class="kpi-title">Total Policies</div>
-                <div class="kpi-value">{total_policies:,}</div>
-                <div class="kpi-subtitle"><span>▲ 4.2%</span> from last cycle</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-        with kpi_col2:
-            st.markdown(f"""
-            <div class="kpi-card">
-                <div class="kpi-title">Active Book</div>
-                <div class="kpi-value">{active_count:,}</div>
-                <div class="kpi-subtitle"><span>● 100%</span> active coverage</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-        with kpi_col3:
-            st.markdown(f"""
-            <div class="kpi-card">
-                <div class="kpi-title">Total Premium Volume</div>
-                <div class="kpi-value">${total_premium:,.0f}</div>
-                <div class="kpi-subtitle"><span>▲ 8.1%</span> YoY growth</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-        with kpi_col4:
-            st.markdown(f"""
-            <div class="kpi-card">
-                <div class="kpi-title">Average Premium</div>
-                <div class="kpi-value">${avg_premium:,.2f}</div>
-                <div class="kpi-subtitle"><span>● Benchmark</span> within target</div>
-            </div>
-            """, unsafe_allow_html=True)
-
-    col_left, col_right = st.columns([1.15, 0.85])
-
-    with col_left:
-        st.markdown("""
-        <div class="card-panel">
-            <div class="panel-header">
-                <div class="panel-header-title">
-                    <span>📋 Policy Book</span>
-                </div>
-                <div class="panel-header-badge">GOLD.FACT_POLICY</div>
-            </div>
-        """, unsafe_allow_html=True)
-        
-        if not df_policies.empty:
-            # Policy Book Filter
-            filter_col1, filter_col2 = st.columns([1, 1])
-            with filter_col1:
-                search_term = st.text_input("🔍 Search Policy ID / Type", "", placeholder="e.g. POL-001 or Auto", label_visibility="collapsed")
-            with filter_col2:
-                types = ["All Types"] + list(df_policies["TYPE"].dropna().unique()) if "TYPE" in df_policies.columns else ["All Types"]
-                selected_type = st.selectbox("Filter Type", types, label_visibility="collapsed")
-
-            filtered_df = df_policies.copy()
-            if search_term:
-                filtered_df = filtered_df[filtered_df.astype(str).apply(lambda row: row.str.contains(search_term, case=False).any(), axis=1)]
-            if selected_type != "All Types" and "TYPE" in filtered_df.columns:
-                filtered_df = filtered_df[filtered_df["TYPE"] == selected_type]
-
-            st.dataframe(
-                filtered_df,
-                use_container_width=True,
-                height=320,
-                hide_index=True
-            )
-            st.caption(f"Showing {len(filtered_df)} of {len(df_policies)} live rows from Snowflake")
-        else:
-            st.info("No policy records returned from Snowflake.")
-            
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    with col_right:
-        st.markdown("""
-        <div class="card-panel">
-            <div class="panel-header">
-                <div class="panel-header-title">
-                    <span>⚡ Quote a New Policy</span>
-                </div>
-                <div class="panel-header-badge">ML Model Input</div>
-            </div>
-        """, unsafe_allow_html=True)
-
-        with st.form("quote_form"):
-            q_col1, q_col2 = st.columns(2)
-            with q_col1:
-                age = st.slider("Applicant Age", 18, 85, 35)
-                credit = st.slider("Credit Score", 300, 850, 700)
-            with q_col2:
-                income = st.number_input("Annual Income ($)", min_value=10000, max_value=500000, value=60000, step=5000)
-                coverage = st.number_input("Coverage Amount ($)", min_value=10000, max_value=2000000, value=250000, step=25000)
-
-            submitted = st.form_submit_button("⚡ Estimate Premium", use_container_width=True, type="primary")
-        
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    # ML Premium Prediction Panel
+    # ── Underwriting-specific CSS ──
     st.markdown("""
-    <div class="card-panel">
-        <div class="panel-header">
-            <div class="panel-header-title">
-                <span>🤖 Predictive ML Valuation</span>
-            </div>
-            <div class="panel-header-badge">PREMIUM_ESTIMATION_MODEL!PREDICT()</div>
-        </div>
+    <style>
+    .uw-kpi-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-left: 4px solid #0EA5E9;
+        border-radius: 10px;
+        padding: 20px 22px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .uw-kpi-card:hover { box-shadow: 0 6px 20px rgba(14,165,233,0.14); transform: translateY(-2px); }
+    .uw-kpi-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #0EA5E9; margin-bottom: 4px; }
+    .uw-kpi-value { font-size: 28px; font-weight: 800; color: #0F172A; line-height: 1.2; }
+    .uw-kpi-delta { font-size: 12px; font-weight: 600; margin-top: 6px; }
+    .uw-kpi-delta.positive { color: #10B981; }
+    .uw-kpi-delta.neutral { color: #0EA5E9; }
+
+    .uw-tile {
+        background: #FFFFFF;
+        border: 1.5px solid #E2E8F0;
+        border-radius: 14px;
+        padding: 22px 26px;
+        min-height: 100px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        transition: box-shadow 0.2s;
+    }
+    .uw-tile:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.09); }
+    .uw-tile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 14px;
+        margin-bottom: 16px;
+        border-bottom: 1px solid #F1F5F9;
+    }
+    .uw-tile-title { font-size: 15px; font-weight: 700; color: #0F172A; display: flex; align-items: center; gap: 8px; }
+    .uw-tile-badge {
+        font-size: 11px; font-weight: 600; font-family: 'JetBrains Mono', monospace;
+        background: #F1F5F9; color: #475569; padding: 4px 10px; border-radius: 6px;
+        border: 1px solid #E2E8F0;
+    }
+
+    /* ── Enterprise Copilot Design System ── */
+    @keyframes copilot-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 50% { box-shadow: 0 0 0 8px rgba(16,185,129,0); } }
+    @keyframes copilot-glow { 0%,100% { box-shadow: 0 4px 24px rgba(37,99,235,0.08); } 50% { box-shadow: 0 4px 32px rgba(37,99,235,0.18); } }
+    @keyframes flow-dot { 0% { opacity:0.3; } 50% { opacity:1; } 100% { opacity:0.3; } }
+    @keyframes fade-up { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes copilot-typing { 0%,80%,100% { opacity:.3; transform:scale(.7); } 40% { opacity:1; transform:scale(1); } }
+
+    .cp-header-card {
+        background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFF 100%);
+        border: 1px solid #E2E8F0; border-radius: 16px;
+        padding: 28px 32px; margin-bottom: 20px;
+        box-shadow: 0 2px 16px rgba(37,99,235,0.06);
+        animation: copilot-glow 4s ease-in-out infinite;
+    }
+    .cp-header-top { display:flex; justify-content:space-between; align-items:center; }
+    .cp-header-left { display:flex; align-items:center; gap:16px; }
+    .cp-logo {
+        width:48px; height:48px; border-radius:14px;
+        background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+        display:flex; align-items:center; justify-content:center;
+        box-shadow: 0 4px 12px rgba(37,99,235,0.25);
+    }
+    .cp-header-title { font-size:20px; font-weight:800; color:#0F172A; letter-spacing:-0.3px; }
+    .cp-header-subtitle { font-size:13px; color:#64748B; margin-top:2px; }
+    .cp-status-badge {
+        display:flex; align-items:center; gap:8px;
+        background:#ECFDF5; border:1px solid #A7F3D0; border-radius:20px;
+        padding:6px 16px; font-size:12px; font-weight:600; color:#059669;
+    }
+    .cp-status-dot { width:8px; height:8px; border-radius:50%; background:#10B981; animation: copilot-pulse 2s infinite; }
+
+    .cp-feature-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:20px; }
+    .cp-feature-card {
+        background:#FFFFFF; border:1px solid #E2E8F0; border-radius:14px;
+        padding:20px; transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+        cursor:default;
+    }
+    .cp-feature-card:hover { border-color:#2563EB; box-shadow:0 8px 24px rgba(37,99,235,0.12); transform:translateY(-3px); }
+    .cp-feature-icon {
+        width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center;
+        margin-bottom:12px;
+    }
+    .cp-feature-icon.blue { background:#EFF6FF; }
+    .cp-feature-icon.purple { background:#F5F3FF; }
+    .cp-feature-icon.emerald { background:#ECFDF5; }
+    .cp-feature-title { font-size:14px; font-weight:700; color:#0F172A; margin-bottom:4px; }
+    .cp-feature-desc { font-size:12px; color:#64748B; line-height:1.6; }
+
+    .cp-workflow-section { margin:24px 0; }
+    .cp-section-title {
+        font-size:16px; font-weight:700; color:#0F172A; margin-bottom:16px;
+        display:flex; align-items:center; gap:10px;
+    }
+    .cp-workflow-bar {
+        display:flex; align-items:center; justify-content:center; gap:0;
+        background:#F8FAFC; border:1px solid #E2E8F0; border-radius:14px;
+        padding:20px 24px;
+    }
+    .cp-flow-step {
+        display:flex; flex-direction:column; align-items:center; gap:8px;
+        min-width:140px; text-align:center;
+    }
+    .cp-flow-icon {
+        width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+        border:2px solid #E2E8F0; background:#FFFFFF;
+        transition: all 0.3s ease;
+    }
+    .cp-flow-icon.active { border-color:#2563EB; background:#EFF6FF; box-shadow:0 2px 8px rgba(37,99,235,0.15); }
+    .cp-flow-label { font-size:11px; font-weight:600; color:#475569; }
+    .cp-flow-connector { display:flex; align-items:center; gap:4px; padding:0 8px; }
+    .cp-flow-dot { width:6px; height:6px; border-radius:50%; background:#CBD5E1; }
+    .cp-flow-dot.d1 { animation: flow-dot 1.5s 0s infinite; }
+    .cp-flow-dot.d2 { animation: flow-dot 1.5s 0.3s infinite; }
+    .cp-flow-dot.d3 { animation: flow-dot 1.5s 0.6s infinite; }
+
+    .cp-applicant-section {
+        background:#FFFFFF; border:1px solid #E2E8F0; border-radius:16px;
+        padding:24px 28px; margin-bottom:20px;
+        box-shadow:0 2px 12px rgba(0,0,0,0.04);
+    }
+    .cp-details-card {
+        background:#F8FAFC; border:1px solid #E2E8F0; border-radius:12px;
+        padding:16px 20px; margin-top:12px;
+    }
+    .cp-detail-row {
+        display:flex; justify-content:space-between; padding:8px 0;
+        border-bottom:1px solid #F1F5F9; font-size:13px;
+    }
+    .cp-detail-row:last-child { border-bottom:none; }
+    .cp-detail-label { color:#64748B; }
+    .cp-detail-value { font-weight:700; color:#0F172A; font-family:'JetBrains Mono',monospace; font-size:12px; }
+    .cp-cta-btn {
+        display:flex; align-items:center; justify-content:center; gap:10px;
+        background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+        color:#FFFFFF; border:none; border-radius:14px;
+        padding:18px 32px; font-size:15px; font-weight:700; letter-spacing:0.3px;
+        cursor:pointer; width:100%;
+        box-shadow: 0 4px 16px rgba(37,99,235,0.3);
+        transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    .cp-cta-btn:hover { box-shadow:0 8px 24px rgba(37,99,235,0.4); transform:translateY(-2px); }
+
+    .cp-results-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin:20px 0; }
+    .cp-metric-card {
+        background:#FFFFFF; border:1px solid #E2E8F0; border-radius:14px;
+        padding:20px; text-align:center;
+        box-shadow:0 2px 8px rgba(0,0,0,0.04);
+        animation: fade-up 0.5s ease-out;
+    }
+    .cp-metric-card.green { border-left:4px solid #10B981; }
+    .cp-metric-card.amber { border-left:4px solid #F59E0B; }
+    .cp-metric-card.red { border-left:4px solid #EF4444; }
+    .cp-metric-card.blue { border-left:4px solid #2563EB; }
+    .cp-metric-label { font-size:11px; font-weight:600; color:#64748B; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; }
+    .cp-metric-value { font-size:28px; font-weight:800; font-family:'JetBrains Mono',monospace; }
+    .cp-metric-sub { font-size:11px; color:#94A3B8; margin-top:4px; }
+
+    .cp-decision-banner {
+        border-radius:16px; padding:28px 32px; margin:20px 0;
+        display:flex; align-items:center; gap:24px;
+        box-shadow:0 4px 20px rgba(0,0,0,0.06);
+        animation: fade-up 0.6s ease-out;
+    }
+    .cp-decision-banner.approve { background:linear-gradient(135deg,#ECFDF5,#D1FAE5); border:2px solid #6EE7B7; }
+    .cp-decision-banner.review { background:linear-gradient(135deg,#FFFBEB,#FEF3C7); border:2px solid #FCD34D; }
+    .cp-decision-banner.decline { background:linear-gradient(135deg,#FEF2F2,#FECACA); border:2px solid #FCA5A5; }
+    .cp-decision-indicator {
+        width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+        flex-shrink:0;
+    }
+    .cp-decision-indicator.green { background:linear-gradient(135deg,#34D399,#059669); box-shadow:0 4px 16px rgba(5,150,105,0.3); }
+    .cp-decision-indicator.yellow { background:linear-gradient(135deg,#FBBF24,#D97706); box-shadow:0 4px 16px rgba(217,119,6,0.3); }
+    .cp-decision-indicator.red { background:linear-gradient(135deg,#F87171,#DC2626); box-shadow:0 4px 16px rgba(220,38,38,0.3); }
+    .cp-decision-text { flex:1; }
+    .cp-decision-title { font-size:20px; font-weight:800; letter-spacing:0.5px; }
+    .cp-decision-action { font-size:13px; margin-top:4px; opacity:0.85; }
+    .cp-decision-meta { font-size:12px; color:#64748B; margin-top:8px; display:flex; gap:16px; flex-wrap:wrap; }
+    .cp-decision-meta b { color:#334155; }
+
+    .cp-binder-card {
+        background:#FFFFFF; border:1px solid #E2E8F0; border-radius:16px;
+        padding:28px 32px; margin:20px 0;
+        box-shadow:0 2px 16px rgba(0,0,0,0.04);
+        animation: fade-up 0.7s ease-out;
+    }
+    .cp-binder-header {
+        display:flex; align-items:center; justify-content:space-between;
+        padding-bottom:16px; margin-bottom:20px; border-bottom:2px solid #F1F5F9;
+    }
+    .cp-binder-title { font-size:16px; font-weight:700; color:#0F172A; display:flex; align-items:center; gap:10px; }
+    .cp-binder-badge {
+        font-size:10px; font-weight:700; background:#EFF6FF; color:#2563EB;
+        padding:4px 12px; border-radius:16px; letter-spacing:0.5px;
+    }
+    .cp-binder-section { margin-bottom:16px; }
+    .cp-binder-section-title {
+        font-size:12px; font-weight:700; color:#64748B; text-transform:uppercase;
+        letter-spacing:0.8px; margin-bottom:8px;
+        padding-bottom:6px; border-bottom:1px solid #F1F5F9;
+    }
+    .cp-binder-row {
+        display:flex; justify-content:space-between; padding:6px 0; font-size:13px;
+    }
+    .cp-binder-label { color:#64748B; }
+    .cp-binder-value { font-weight:600; color:#0F172A; }
+
+    .cp-copilot-panel {
+        background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFF 100%);
+        border:1px solid #E2E8F0; border-radius:16px;
+        padding:20px; margin:20px 0;
+        box-shadow:0 2px 16px rgba(37,99,235,0.06);
+    }
+    .cp-copilot-header-bar {
+        display:flex; align-items:center; gap:10px;
+        padding-bottom:12px; margin-bottom:14px; border-bottom:1px solid #EFF6FF;
+    }
+    .cp-copilot-avatar {
+        width:32px; height:32px; border-radius:10px;
+        background:linear-gradient(135deg,#2563EB,#7C3AED);
+        display:flex; align-items:center; justify-content:center;
+    }
+    .cp-copilot-name { font-size:14px; font-weight:700; color:#0F172A; }
+    .cp-copilot-tag { font-size:10px; color:#64748B; }
+    .cp-chat-bubble {
+        background:#F0F4FF; border:1px solid #DBEAFE; border-radius:12px;
+        padding:12px 16px; margin-bottom:10px; font-size:13px; color:#1E293B; line-height:1.6;
+        animation: fade-up 0.4s ease-out;
+    }
+    .cp-chat-bubble.ai { border-left:3px solid #2563EB; }
+    .cp-chat-action {
+        display:inline-flex; align-items:center; gap:6px;
+        background:#FFFFFF; border:1px solid #E2E8F0; border-radius:8px;
+        padding:6px 14px; font-size:12px; font-weight:600; color:#2563EB;
+        cursor:pointer; transition:all 0.2s;
+        margin-right:8px; margin-top:6px;
+    }
+    .cp-chat-action:hover { background:#EFF6FF; border-color:#2563EB; }
+    .cp-typing-indicator { display:flex; gap:4px; padding:8px 0; }
+    .cp-typing-dot { width:6px; height:6px; border-radius:50%; background:#2563EB; }
+    .cp-typing-dot:nth-child(1) { animation:copilot-typing 1.4s 0s infinite; }
+    .cp-typing-dot:nth-child(2) { animation:copilot-typing 1.4s 0.2s infinite; }
+    .cp-typing-dot:nth-child(3) { animation:copilot-typing 1.4s 0.4s infinite; }
+
+    .uw-info-banner {
+        background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 10px;
+        padding: 14px 20px; margin-bottom: 16px; font-size: 13px; color: #1E40AF; line-height: 1.6;
+    }
+    .uw-info-banner b { color: #1D4ED8; }
+
+    .uw-decision-card {
+        border-radius: 16px; padding: 40px 24px; text-align: center; margin: 20px 0;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    .uw-decision-card.approve { background: linear-gradient(135deg, #ECFDF5, #D1FAE5); border: 2px solid #6EE7B7; }
+    .uw-decision-card.review { background: linear-gradient(135deg, #FFFBEB, #FEF3C7); border: 2px solid #FCD34D; }
+    .uw-decision-card.decline { background: linear-gradient(135deg, #FEF2F2, #FECACA); border: 2px solid #FCA5A5; }
+    .uw-decision-label { font-size: 18px; font-weight: 800; letter-spacing: 1.5px; margin-top: 14px; }
+    .uw-decision-score { font-size: 34px; font-weight: 800; margin-top: 4px; }
+    .uw-decision-action { font-size: 13px; margin-top: 10px; opacity: 0.85; }
+    .uw-decision-meta { font-size: 12px; color: #64748B; margin-top: 12px; }
+
+    .uw-sphere {
+        width: 56px; height: 56px; border-radius: 50%; margin: 0 auto;
+        box-shadow: inset -8px -8px 16px rgba(0,0,0,0.15), inset 6px 6px 12px rgba(255,255,255,0.6), 0 4px 12px rgba(0,0,0,0.10);
+    }
+    .uw-sphere.green { background: radial-gradient(circle at 35% 35%, #6EE7B7, #059669); }
+    .uw-sphere.yellow { background: radial-gradient(circle at 35% 35%, #FDE68A, #D97706); }
+    .uw-sphere.red { background: radial-gradient(circle at 35% 35%, #FCA5A5, #DC2626); }
+
+    /* ── Landing Page Tile Cards ── */
+    .uw-landing-title {
+        font-size: 20px; font-weight: 800; color: #0F172A;
+        text-align: center; margin-bottom: 2px;
+    }
+    .uw-landing-subtitle {
+        font-size: 12px; color: #64748B; text-align: center;
+        margin-bottom: 18px; max-width: 540px; margin-left: auto; margin-right: auto;
+    }
+    .uw-tile-card {
+        background: #FFFFFF;
+        border: 1.5px solid #E2E8F0;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+    }
+    .uw-tile-card:hover {
+        box-shadow: 0 8px 28px rgba(14,165,233,0.15);
+        transform: translateY(-3px);
+        border-color: #0EA5E9;
+    }
+    .uw-tile-card-body {
+        padding: 14px 18px 16px 18px;
+    }
+    .uw-tile-card-title {
+        font-size: 14px; font-weight: 800; color: #0F172A;
+        margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+    }
+    .uw-tile-card-desc {
+        font-size: 11.5px; color: #475569; line-height: 1.6; margin-bottom: 10px;
+    }
+    .uw-tile-card-features {
+        display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 0;
+    }
+    .uw-tile-card-chip {
+        font-size: 10px; font-weight: 600; color: #0369A1; background: #E0F2FE;
+        padding: 2px 8px; border-radius: 16px; white-space: nowrap;
+    }
+
+    .uw-xai-tile {
+        background: #FFFFFF;
+        border: 1.5px solid #E2E8F0;
+        border-radius: 14px;
+        padding: 22px 26px;
+        margin-top: 20px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .uw-xai-tile-header {
+        display: flex; align-items: center; gap: 10px;
+        padding-bottom: 12px; margin-bottom: 14px; border-bottom: 1px solid #F1F5F9;
+    }
+
+    .uw-multiplier-tile {
+        background: #FFFFFF;
+        border: 1.5px solid #E2E8F0;
+        border-radius: 14px;
+        padding: 22px 26px;
+        margin-top: 20px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .uw-agent-popup-header {
+        font-weight: 700; font-size: 14px; color: #6B21A8;
+        display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+    }
+    </style>
     """, unsafe_allow_html=True)
 
-    p_col1, p_col2 = st.columns([1, 1])
-    try:
-        est_price = sf.estimate_premium(age, income, credit, coverage)
-        risk_tier = "Low Risk" if credit >= 720 else ("Moderate Risk" if credit >= 620 else "Elevated Risk")
-        
-        with p_col1:
+    st.markdown("""
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:4px;">
+        <div style="font-size:28px; background:linear-gradient(135deg,#0EA5E9,#0369A1); border-radius:10px; width:42px; height:42px; display:flex; align-items:center; justify-content:center; color:#FFF;">🛡️</div>
+        <div>
+            <div style="font-size:20px; font-weight:800; color:#0F172A;">Underwriting Workbench</div>
+            <div style="font-size:12px; color:#64748B;">Real-time policy book management, risk scoring, and ML-powered automated premium quoting.</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── Sub-page Navigation State ──
+    if "uw_subpage" not in st.session_state:
+        st.session_state["uw_subpage"] = "landing"
+
+    # ── Back button when inside a sub-page ──
+    if st.session_state["uw_subpage"] != "landing":
+        if st.button("← Back to Underwriting Workbench", key="uw_back_btn"):
+            st.session_state["uw_subpage"] = "landing"
+            st.rerun()
+
+    # ══════════════════════════════════════════════════════════════════════
+    # LANDING PAGE — Capability Tiles
+    # ══════════════════════════════════════════════════════════════════════
+    if st.session_state["uw_subpage"] == "landing":
+        st.markdown("<div style='height:8px;'></div>", unsafe_allow_html=True)
+        st.markdown("""
+        <div class="uw-landing-title">Underwriting Capabilities</div>
+        <div class="uw-landing-subtitle">
+            From idea to AI — design, test, and deploy on a single platform.
+            Select a capability below to get started.
+        </div>
+        """, unsafe_allow_html=True)
+
+        tile_col1, tile_col2 = st.columns(2, gap="large")
+
+        with tile_col1:
+            st.markdown("""
+            <div class="uw-tile-card">
+                <div style="width:100%; height:110px; background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 40%, #38BDF8 100%); display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden;">
+                    <div style="position:absolute; top:-20px; right:-20px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,0.08);"></div>
+                    <div style="position:absolute; bottom:-20px; left:-20px; width:80px; height:80px; border-radius:50%; background:rgba(255,255,255,0.05);"></div>
+                    <div style="text-align:center; position:relative; z-index:1;">
+                        <div style="font-size:32px; margin-bottom:4px;">📑</div>
+                        <div style="font-size:11px; font-weight:700; color:#FFFFFF; letter-spacing:1px; text-transform:uppercase;">Policy Management</div>
+                    </div>
+                </div>
+                <div class="uw-tile-card-body">
+                    <div class="uw-tile-card-title">
+                        <span>📋</span> Smart Policy Quotation
+                    </div>
+                    <div class="uw-tile-card-desc">
+                        Generate insurance quotations using customer demographics, credit scores, income details,
+                        coverage requirements, and underwriting parameters. Users can explore policy books,
+                        compare policy tiers, and instantly estimate premiums through an intelligent pricing engine.
+                    </div>
+                    <div class="uw-tile-card-features">
+                        <span class="uw-tile-card-chip">Policy Book Management</span>
+                        <span class="uw-tile-card-chip">Policy Search & Filtering</span>
+                        <span class="uw-tile-card-chip">Policy Catalog View</span>
+                        <span class="uw-tile-card-chip">Premium Estimation</span>
+                        <span class="uw-tile-card-chip">Coverage Analysis</span>
+                        <span class="uw-tile-card-chip">Risk-Based Pricing</span>
+                        <span class="uw-tile-card-chip">Quote Generation</span>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button("⚡ Launch Smart Quote Engine", use_container_width=True, type="primary", key="launch_tile_quote"):
+                st.session_state["uw_subpage"] = "smart_quote"
+                st.rerun()
+
+        with tile_col2:
+            st.markdown("""
+            <div class="uw-tile-card">
+                <div style="width:100%; height:110px; background: linear-gradient(135deg, #6B21A8 0%, #9333EA 40%, #A855F7 100%); display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden;">
+                    <div style="position:absolute; top:-20px; right:-20px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,0.08);"></div>
+                    <div style="position:absolute; bottom:-20px; left:-20px; width:80px; height:80px; border-radius:50%; background:rgba(255,255,255,0.05);"></div>
+                    <div style="text-align:center; position:relative; z-index:1;">
+                        <div style="font-size:32px; margin-bottom:4px;">🧠</div>
+                        <div style="font-size:11px; font-weight:700; color:#FFFFFF; letter-spacing:1px; text-transform:uppercase;">AI Decisioning</div>
+                    </div>
+                </div>
+                <div class="uw-tile-card-body">
+                    <div class="uw-tile-card-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> AI Underwriting Copilot & Auto-Binder
+                    </div>
+                    <div class="uw-tile-card-desc">
+                        Leverage AI-driven underwriting intelligence to automatically assess applicant risk,
+                        generate underwriting recommendations, explain decisions, and route applications for
+                        approval, review, or rejection through an autonomous decisioning engine.
+                    </div>
+                    <div class="uw-tile-card-features">
+                        <span class="uw-tile-card-chip">AI Risk Scoring</span>
+                        <span class="uw-tile-card-chip">Automated Decisioning</span>
+                        <span class="uw-tile-card-chip">Auto Approval Engine</span>
+                        <span class="uw-tile-card-chip">Applicant Risk Assessment</span>
+                        <span class="uw-tile-card-chip">Policy Recommendation</span>
+                        <span class="uw-tile-card-chip">Underwriting Automation</span>
+                        <span class="uw-tile-card-chip">Intelligent Auto-Binding</span>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button("Launch AI Underwriting Copilot", use_container_width=True, type="primary", key="launch_tile_copilot"):
+                st.session_state["uw_subpage"] = "ai_copilot"
+                st.rerun()
+
+    # ══════════════════════════════════════════════════════════════════════
+    # SUB-PAGE 1: Smart Policy Quotation  &  SUB-PAGE 2: AI Copilot
+    # ══════════════════════════════════════════════════════════════════════
+
+    # ── Agent Opinion Dialog ──
+    @st.dialog("AI Underwriting Assistant", width="small")
+    def _show_agent_opinion_dialog():
+        import html as _html
+
+        profile = st.session_state.get("uw_copilot_profile", {})
+        decision = st.session_state.get("uw_copilot_decision", {})
+        if not profile:
+            st.warning("Run the Underwriting Copilot first to load a customer profile.")
+            return
+
+        bucket = decision.get("bucket", "")
+        score = decision.get("score", 0)
+        if bucket == "AUTO_APPROVE":
+            status_color = "#059669"; status_text = "Low Risk"; status_bg = "#ECFDF5"; status_border = "#A7F3D0"
+        elif bucket == "HUMAN_REVIEW":
+            status_color = "#D97706"; status_text = "Moderate Risk"; status_bg = "#FFFBEB"; status_border = "#FDE68A"
+        else:
+            status_color = "#DC2626"; status_text = "High Risk"; status_bg = "#FEF2F2"; status_border = "#FECACA"
+
+        applicant_context = (
+            f"Applicant: {profile.get('FULL_NAME','N/A')}, Age: {profile.get('AGE','N/A')}, "
+            f"Credit Score: {profile.get('CREDIT_SCORE','N/A')}, "
+            f"Annual Income: ${float(profile.get('ANNUAL_INCOME',0) or 0):,.0f}, "
+            f"Policy Type: {profile.get('POLICY_TYPE','N/A')}, Plan Tier: {profile.get('PLAN_TIER','N/A')}, "
+            f"Smoking: {profile.get('SMOKING_STATUS','No')}, BMI: {profile.get('BMI','N/A')}, "
+            f"Risk Score: {score:.2f}, Decision Bucket: {bucket}, "
+            f"Loss Ratio: {profile.get('LOSS_RATIO',0)}, "
+            f"ML Predicted Premium: ${float(profile.get('ML_PREDICTED_PREMIUM',0) or 0):,.2f}, "
+            f"Fraud Claims: {profile.get('FRAUD_CLAIM_COUNT',0)}, Total Claims: {profile.get('TOTAL_CLAIMS',0)}"
+        )
+
+        # CSS for chat UI
+        st.markdown(f"""
+        <style>
+            [data-testid="stDialog"] > div > div {{ max-width: 600px !important; }}
+            .chat-header {{
+                display:flex; align-items:center; gap:12px;
+                padding-bottom:12px; margin-bottom:4px; border-bottom:1px solid #F1F5F9;
+            }}
+            .chat-avatar {{
+                width:36px; height:36px; border-radius:10px;
+                background:linear-gradient(135deg,#2563EB,#7C3AED);
+                display:flex; align-items:center; justify-content:center; flex-shrink:0;
+            }}
+            .chat-avatar svg {{ stroke:white; }}
+            .chat-name {{ font-size:15px; font-weight:700; color:#0F172A; }}
+            .chat-tag {{ font-size:11px; color:#64748B; }}
+            .chat-status {{
+                display:inline-flex; align-items:center; gap:6px;
+                font-size:11px; font-weight:600; padding:3px 10px;
+                border-radius:12px; margin-left:auto;
+                background:{status_bg}; border:1px solid {status_border}; color:{status_color};
+            }}
+            .chat-status-dot {{ width:6px; height:6px; border-radius:50%; background:{status_color}; display:inline-block; }}
+            .chat-context {{
+                background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px;
+                padding:10px 14px; margin:8px 0 4px 0; font-size:11px; color:#64748B;
+            }}
+            .chat-context b {{ color:#334155; }}
+            .msg-ai {{
+                background:linear-gradient(135deg,#F8FAFF,#F0F4FF); border:1px solid #DBEAFE;
+                border-radius:12px 12px 12px 2px; padding:12px 16px; margin:6px 0;
+                font-size:13px; color:#1E293B; line-height:1.7;
+            }}
+            .msg-user {{
+                background:linear-gradient(135deg,#2563EB,#1D4ED8); color:#FFFFFF;
+                border-radius:12px 12px 2px 12px; padding:10px 16px; margin:6px 0 6px auto;
+                font-size:13px; line-height:1.5; max-width:85%; text-align:right;
+                width:fit-content; margin-left:auto;
+            }}
+            .msg-ai-label {{
+                font-size:10px; font-weight:600; color:#64748B; margin-bottom:4px;
+                display:flex; align-items:center; gap:4px;
+            }}
+            .msg-user-label {{
+                font-size:10px; font-weight:600; color:#94A3B8; margin-bottom:4px; text-align:right;
+            }}
+        </style>
+        <div class="chat-header">
+            <div class="chat-avatar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+            </div>
+            <div>
+                <div class="chat-name">AI Underwriting Assistant</div>
+                <div class="chat-tag">Ask me anything about this applicant</div>
+            </div>
+            <div class="chat-status">
+                <span class="chat-status-dot"></span>
+                {status_text}
+            </div>
+        </div>
+        <div class="chat-context">
+            Reviewing <b>{profile.get('FULL_NAME','N/A')}</b> &mdash;
+            Score: <b>{score:.2f}</b> &middot;
+            {profile.get('POLICY_TYPE','N/A')} / {profile.get('PLAN_TIER','N/A')} &middot;
+            Premium: <b>${float(profile.get('FINAL_PREMIUM',0) or 0):,.0f}</b>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Initialize chat history
+        if "agent_chat_history" not in st.session_state:
+            st.session_state["agent_chat_history"] = []
+
+        # Auto-generate initial opinion if chat is empty
+        if not st.session_state["agent_chat_history"]:
+            with st.spinner("Analyzing applicant profile..."):
+                try:
+                    initial_prompt = (
+                        f"Provide a concise professional underwriting opinion for this applicant. "
+                        f"{applicant_context}. "
+                        f"Format as: Risk Assessment (1-2 sentences), Recommendation (approve/review/decline with reason), "
+                        f"Premium Note (1 sentence), Key Conditions (bullet points if any). Keep it concise."
+                    )
+                    initial_response = sf.ask_underwriting_agent(initial_prompt)
+                except Exception as e:
+                    initial_response = f"Unable to generate initial assessment: {e}"
+            st.session_state["agent_chat_history"].append({"role": "ai", "content": initial_response})
+
+        # Render chat messages
+        for msg in st.session_state["agent_chat_history"]:
+            safe_content = _html.escape(str(msg["content"])).replace("\n", "<br>")
+            if msg["role"] == "ai":
+                st.markdown(
+                    '<div class="msg-ai-label">'
+                    '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>'
+                    ' AI Assistant</div>'
+                    f'<div class="msg-ai">{safe_content}</div>',
+                    unsafe_allow_html=True
+                )
+            else:
+                st.markdown(
+                    f'<div class="msg-user-label">You</div>'
+                    f'<div class="msg-user">{safe_content}</div>',
+                    unsafe_allow_html=True
+                )
+
+        # Quick-action suggestion chips (only show when no pending question)
+        if len(st.session_state["agent_chat_history"]) <= 2:
+            chip_cols = st.columns(3)
+            suggestions = [
+                "What are the main risk factors?",
+                "Is the premium fairly priced?",
+                "Any exclusions needed?"
+            ]
+            for i, sug in enumerate(suggestions):
+                with chip_cols[i]:
+                    if st.button(sug, key=f"agent_chip_{i}", use_container_width=True):
+                        st.session_state["agent_chat_history"].append({"role": "user", "content": sug})
+                        with st.spinner("Thinking..."):
+                            try:
+                                follow_up_prompt = (
+                                    f"Context: {applicant_context}. "
+                                    f"Previous conversation: {st.session_state['agent_chat_history'][-2]['content'] if len(st.session_state['agent_chat_history']) >= 2 else 'Initial assessment'}. "
+                                    f"User question: {sug}. "
+                                    f"Provide a concise, focused answer."
+                                )
+                                follow_response = sf.ask_underwriting_agent(follow_up_prompt)
+                            except Exception as e:
+                                follow_response = f"Error: {e}"
+                        st.session_state["agent_chat_history"].append({"role": "ai", "content": follow_response})
+                        st.rerun()
+
+        # Chat input
+        user_question = st.chat_input("Ask about this applicant...", key="agent_chat_input")
+        if user_question:
+            st.session_state["agent_chat_history"].append({"role": "user", "content": user_question})
+            recent_context = ""
+            for m in st.session_state["agent_chat_history"][-4:]:
+                role_label = "Assistant" if m["role"] == "ai" else "User"
+                recent_context += f"{role_label}: {m['content'][:300]}\n"
+            with st.spinner("Thinking..."):
+                try:
+                    follow_up_prompt = (
+                        f"You are an AI underwriting expert. Applicant context: {applicant_context}. "
+                        f"Recent conversation:\n{recent_context}\n"
+                        f"User asks: {user_question}\n"
+                        f"Provide a concise, professional answer focused on this applicant."
+                    )
+                    follow_response = sf.ask_underwriting_agent(follow_up_prompt)
+                except Exception as e:
+                    follow_response = f"Error: {e}"
+            st.session_state["agent_chat_history"].append({"role": "ai", "content": follow_response})
+            st.rerun()
+
+    # ══════════════════════════════════════════════════════════════════════
+    # SUB-PAGE 1: Smart Policy Quotation
+    # ══════════════════════════════════════════════════════════════════════
+    if st.session_state["uw_subpage"] == "smart_quote":
+
+        # ── Live Data Fetch ──
+        df_policies = pd.DataFrame()
+        try:
+            df_policies = sf.get_policies_data()
+        except Exception as e:
+            render_snowflake_error(e, "Snowflake Policy Book")
+
+        # =====================================================================
+        # SECTION 1: KPI CARDS ROW
+        # =====================================================================
+        if not df_policies.empty:
+            total_policies = len(df_policies)
+            active_count = len(df_policies[df_policies["STATUS"].astype(str).str.upper() == "ACTIVE"]) if "STATUS" in df_policies.columns else total_policies
+            if "PREMIUM" in df_policies.columns:
+                total_premium = pd.to_numeric(df_policies["PREMIUM"], errors="coerce").sum()
+                avg_premium = pd.to_numeric(df_policies["PREMIUM"], errors="coerce").mean()
+            else:
+                total_premium = 0
+                avg_premium = 0
+
+            active_pct = (active_count / total_policies * 100) if total_policies > 0 else 0
+
+            kpi_col1, kpi_col2, kpi_col3, kpi_col4 = st.columns(4)
+            with kpi_col1:
+                st.markdown(f"""
+                <div class="uw-kpi-card">
+                    <div class="uw-kpi-label">TOTAL POLICIES</div>
+                    <div class="uw-kpi-value">{total_policies:,}</div>
+                    <div class="uw-kpi-delta positive">&#9650; 4.2% from last cycle</div>
+                </div>
+                """, unsafe_allow_html=True)
+            with kpi_col2:
+                st.markdown(f"""
+                <div class="uw-kpi-card">
+                    <div class="uw-kpi-label">ACTIVE BOOK</div>
+                    <div class="uw-kpi-value">{active_count:,}</div>
+                    <div class="uw-kpi-delta neutral">&#9679; {active_pct:.0f}% active coverage</div>
+                </div>
+                """, unsafe_allow_html=True)
+            with kpi_col3:
+                st.markdown(f"""
+                <div class="uw-kpi-card">
+                    <div class="uw-kpi-label">TOTAL PREMIUM VOLUME</div>
+                    <div class="uw-kpi-value">${total_premium:,.0f}</div>
+                    <div class="uw-kpi-delta positive">&#9650; 8.1% YoY growth</div>
+                </div>
+                """, unsafe_allow_html=True)
+            with kpi_col4:
+                st.markdown(f"""
+                <div class="uw-kpi-card">
+                    <div class="uw-kpi-label">AVERAGE PREMIUM</div>
+                    <div class="uw-kpi-value">${avg_premium:,.2f}</div>
+                    <div class="uw-kpi-delta neutral">&#9679; Benchmark within target</div>
+                </div>
+                """, unsafe_allow_html=True)
+
+        # =====================================================================
+        # SECTION 2: POLICY BOOK (left) + QUOTE A NEW POLICY (right)
+        # =====================================================================
+        st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
+        col_left, col_right = st.columns([1.15, 0.85])
+
+        with col_left:
+            with st.container(border=True):
+                st.markdown("""
+                <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:10px; margin-bottom:12px; border-bottom:1px solid #F1F5F9;">
+                    <div style="font-size:15px; font-weight:700; color:#0F172A; display:flex; align-items:center; gap:8px;"><span>📋</span> Policy Book</div>
+                    <span style="font-size:11px; font-weight:600; font-family:monospace; background:#F1F5F9; color:#475569; padding:4px 10px; border-radius:6px; border:1px solid #E2E8F0;">GOLD.FACT_POLICY</span>
+                </div>
+                """, unsafe_allow_html=True)
+
+                if not df_policies.empty:
+                    filter_col1, filter_col2 = st.columns([1, 1])
+                    with filter_col1:
+                        search_term = st.text_input("Search", "", placeholder="e.g. POL-001 or Auto", label_visibility="collapsed", key="uw_search")
+                    with filter_col2:
+                        types = ["All Types"] + list(df_policies["TYPE"].dropna().unique()) if "TYPE" in df_policies.columns else ["All Types"]
+                        selected_type = st.selectbox("Filter Type", types, label_visibility="collapsed", key="uw_type_filter")
+
+                    filtered_df = df_policies.copy()
+                    if search_term:
+                        filtered_df = filtered_df[filtered_df.astype(str).apply(lambda row: row.str.contains(search_term, case=False).any(), axis=1)]
+                    if selected_type != "All Types" and "TYPE" in filtered_df.columns:
+                        filtered_df = filtered_df[filtered_df["TYPE"] == selected_type]
+
+                    display_cols = [c for c in ["POLICY_ID", "TYPE", "TIER", "PREMIUM", "STATUS"] if c in filtered_df.columns]
+                    st.dataframe(filtered_df[display_cols] if display_cols else filtered_df, use_container_width=True, height=340, hide_index=True)
+                    st.caption(f"Showing {len(filtered_df)} of {len(df_policies)} rows")
+                else:
+                    st.info("No policy records returned from Snowflake.")
+
+        with col_right:
+            with st.container(border=True):
+                st.markdown("""
+                <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:10px; margin-bottom:12px; border-bottom:1px solid #F1F5F9;">
+                    <div style="font-size:15px; font-weight:700; color:#0F172A; display:flex; align-items:center; gap:8px;"><span>⚡</span> Quote a New Policy</div>
+                    <span style="font-size:11px; font-weight:600; font-family:monospace; background:#F1F5F9; color:#475569; padding:4px 10px; border-radius:6px; border:1px solid #E2E8F0;">ML Model Input</span>
+                </div>
+                """, unsafe_allow_html=True)
+
+                with st.form("quote_form"):
+                    qf_c1, qf_c2 = st.columns(2)
+                    with qf_c1:
+                        age = st.slider("Applicant Age", 18, 85, 35)
+                        credit = st.slider("Credit Score", 300, 850, 700)
+                    with qf_c2:
+                        income = st.number_input("Annual Income ($)", min_value=10000, max_value=500000, value=60000, step=5000)
+                        coverage = st.number_input("Coverage Amount ($)", min_value=10000, max_value=2000000, value=250000, step=25000)
+                    submitted = st.form_submit_button("⚡ Estimate Premium", use_container_width=True, type="primary")
+
+                if submitted:
+                    try:
+                        est_price = sf.estimate_premium(age, income, credit, coverage)
+                        risk_tier = "Low Risk" if credit >= 720 else ("Moderate Risk" if credit >= 620 else "Elevated Risk")
+                        tier_color = "#10B981" if credit >= 720 else ("#F59E0B" if credit >= 620 else "#EF4444")
+                        st.markdown(f"""
+                        <div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:10px; padding:16px; text-align:center; margin-top:8px;">
+                            <div style="font-size:12px; font-weight:600; color:#64748B; text-transform:uppercase; letter-spacing:0.5px;">Estimated Annual Premium</div>
+                            <div style="font-size:28px; font-weight:800; color:#0F172A; margin:4px 0;">${est_price:,.2f}</div>
+                            <span style="background:{tier_color}; color:#FFF; padding:3px 10px; border-radius:12px; font-size:11px; font-weight:700;">{risk_tier}</span>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    except Exception as e:
+                        render_snowflake_error(e, "Live Prediction Model")
+
+    # SUB-PAGE 2: AI Underwriting Copilot & Auto-Binder
+    if st.session_state["uw_subpage"] == "ai_copilot":
+
+        # === SVG Icon Definitions ===
+        _svg_shield = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'
+        _svg_user_search = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="7" r="4"/><path d="M10.3 15H7a4 4 0 0 0-4 4v2"/><circle cx="17" cy="17" r="3"/><path d="m21 21-1.9-1.9"/></svg>'
+        _svg_brain = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>'
+        _svg_file_check = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/></svg>'
+        _svg_activity = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>'
+        _svg_database = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>'
+        _svg_scan = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/></svg>'
+        _svg_check_circle = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
+        _svg_zap = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>'
+        _svg_clipboard = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>'
+        _svg_download = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>'
+        _svg_sparkles = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>'
+        _svg_message = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
+        _svg_bar_chart = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>'
+        _svg_trending = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>'
+
+        # =====================================================================
+        # SECTION 3A: HEADER CARD
+        # =====================================================================
+        st.markdown(f"""
+        <div class="cp-header-card">
+            <div class="cp-header-top">
+                <div class="cp-header-left">
+                    <div class="cp-logo">{_svg_shield}</div>
+                    <div>
+                        <div class="cp-header-title">AI Underwriting Copilot &amp; Auto-Binder</div>
+                        <div class="cp-header-subtitle">AI-Powered Risk Assessment &amp; Automated Policy Decisioning</div>
+                    </div>
+                </div>
+                <div class="cp-status-badge">
+                    <div class="cp-status-dot"></div>
+                    AI Engine Active
+                </div>
+            </div>
+            <div class="cp-feature-grid">
+                <div class="cp-feature-card">
+                    <div class="cp-feature-icon blue">{_svg_user_search}</div>
+                    <div class="cp-feature-title">Customer Risk Analysis</div>
+                    <div class="cp-feature-desc">Aggregates data from 5 Snowflake tables including credit, demographics, and claims history for holistic risk profiling.</div>
+                </div>
+                <div class="cp-feature-card">
+                    <div class="cp-feature-icon purple">{_svg_brain}</div>
+                    <div class="cp-feature-title">ML Risk Prediction</div>
+                    <div class="cp-feature-desc">Machine learning models score applicant risk using actuarial multipliers and predictive analytics in real time.</div>
+                </div>
+                <div class="cp-feature-card">
+                    <div class="cp-feature-icon emerald">{_svg_file_check}</div>
+                    <div class="cp-feature-title">Automated Binder Generation</div>
+                    <div class="cp-feature-desc">Auto-routes decisions to Approve, Review, or Decline buckets and generates policy binder documents instantly.</div>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # =====================================================================
+        # SECTION 3B: AI DECISION PROCESS VISUALIZATION
+        # =====================================================================
+        has_results = "uw_copilot_decision" in st.session_state and "uw_copilot_profile" in st.session_state
+        step_active = ["active" if has_results else "", "active" if has_results else "", "active" if has_results else "", "active" if has_results else ""]
+
+        st.markdown(f"""
+        <div class="cp-workflow-bar">
+            <div class="cp-flow-step">
+                <div class="cp-flow-icon {step_active[0]}">{_svg_user_search.replace('stroke="#2563EB"', 'stroke="#2563EB"')}</div>
+                <div class="cp-flow-label">Customer Selected</div>
+            </div>
+            <div class="cp-flow-connector"><div class="cp-flow-dot d1"></div><div class="cp-flow-dot d2"></div><div class="cp-flow-dot d3"></div></div>
+            <div class="cp-flow-step">
+                <div class="cp-flow-icon {step_active[1]}">{_svg_database}</div>
+                <div class="cp-flow-label">Data Collection</div>
+            </div>
+            <div class="cp-flow-connector"><div class="cp-flow-dot d1"></div><div class="cp-flow-dot d2"></div><div class="cp-flow-dot d3"></div></div>
+            <div class="cp-flow-step">
+                <div class="cp-flow-icon {step_active[2]}">{_svg_scan}</div>
+                <div class="cp-flow-label">Risk Assessment</div>
+            </div>
+            <div class="cp-flow-connector"><div class="cp-flow-dot d1"></div><div class="cp-flow-dot d2"></div><div class="cp-flow-dot d3"></div></div>
+            <div class="cp-flow-step">
+                <div class="cp-flow-icon {step_active[3]}">{_svg_check_circle}</div>
+                <div class="cp-flow-label">Auto-Binder Decision</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # =====================================================================
+        # SECTION 3C: APPLICANT UNDERWRITING REVIEW
+        # =====================================================================
+        copilot_customers = pd.DataFrame()
+        try:
+            copilot_customers = sf.run_query("""
+                SELECT c.CUSTOMER_ID, c.FIRST_NAME || ' ' || c.LAST_NAME AS NAME, c.CREDIT_SCORE, c.AGE
+                FROM INSURANCE_MGMT_SYSTEM.CORE.CUSTOMERS c
+                INNER JOIN INSURANCE_MGMT_SYSTEM.PREMIUM.PREMIUM_CALCULATIONS pc ON c.CUSTOMER_ID = pc.CUSTOMER_ID
+                ORDER BY c.CUSTOMER_ID
+            """)
+        except Exception:
+            try:
+                copilot_customers = sf.run_query("SELECT CUSTOMER_ID, FIRST_NAME || ' ' || LAST_NAME AS NAME, CREDIT_SCORE, AGE FROM INSURANCE_MGMT_SYSTEM.CORE.CUSTOMERS ORDER BY CUSTOMER_ID")
+            except Exception:
+                pass
+
+        if not copilot_customers.empty:
             st.markdown(f"""
-            <div class="prediction-container">
-                <div class="prediction-title">Estimated Annual Premium</div>
-                <div class="prediction-amount">${est_price:,.2f}</div>
-                <span class="prediction-tag">{risk_tier}</span>
-                <div style="font-size:12px; color:#166534; margin-top:6px;">Calculated dynamically via Snowflake predictive model</div>
+            <div class="cp-section-title" style="margin-top:24px;">
+                {_svg_clipboard}
+                <span>Applicant Underwriting Review</span>
             </div>
             """, unsafe_allow_html=True)
 
-        with p_col2:
-            st.markdown('<div class="kpi-title" style="margin-bottom:10px;">Top Actuarial & Rate Drivers</div>', unsafe_allow_html=True)
-            credit_mult = f"▼ {max(0.75, 1.0 - (credit - 600)*0.0008):.2f}x" if credit >= 650 else f"▲ {1.0 + (650 - credit)*0.001:.2f}x"
-            age_mult = f"▲ {1.0 + (age - 25)*0.004:.2f}x" if age > 30 else "● Baseline 1.00x"
-            cov_mult = f"▲ {1.0 + (coverage / 500000)*0.1:.2f}x"
-            
+            cp_left, cp_right = st.columns([3, 2])
+            with cp_left:
+                customer_options = [f"{r['CUSTOMER_ID']} - {r['NAME']} (Credit: {r.get('CREDIT_SCORE','N/A')}, Age: {r.get('AGE','N/A')})" for _, r in copilot_customers.iterrows()]
+                selected_customer_str = st.selectbox("Select Applicant for Underwriting Review", customer_options, key="copilot_customer_select", label_visibility="collapsed")
+                selected_cust_id = selected_customer_str.split(" - ")[0].strip()
+
+                sel_row = copilot_customers[copilot_customers["CUSTOMER_ID"] == selected_cust_id]
+                if not sel_row.empty:
+                    r = sel_row.iloc[0]
+                    credit = r.get("CREDIT_SCORE", "N/A")
+                    age = r.get("AGE", "N/A")
+                    credit_val = int(credit) if str(credit).isdigit() else 0
+                    risk_seg = "Low Risk" if credit_val >= 700 else ("Medium Risk" if credit_val >= 600 else "High Risk")
+                    risk_color = "#059669" if credit_val >= 700 else ("#D97706" if credit_val >= 600 else "#DC2626")
+                    st.markdown(f"""
+                    <div class="cp-details-card">
+                        <div style="font-size:13px; font-weight:700; color:#0F172A; margin-bottom:10px;">Applicant Details Preview</div>
+                        <div class="cp-detail-row"><span class="cp-detail-label">Customer ID</span><span class="cp-detail-value">{selected_cust_id}</span></div>
+                        <div class="cp-detail-row"><span class="cp-detail-label">Full Name</span><span class="cp-detail-value">{r.get('NAME','N/A')}</span></div>
+                        <div class="cp-detail-row"><span class="cp-detail-label">Credit Score</span><span class="cp-detail-value">{credit}</span></div>
+                        <div class="cp-detail-row"><span class="cp-detail-label">Age</span><span class="cp-detail-value">{age}</span></div>
+                        <div class="cp-detail-row"><span class="cp-detail-label">Risk Segment</span><span class="cp-detail-value" style="color:{risk_color};">{risk_seg}</span></div>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+            with cp_right:
+                st.markdown("<div style='height:8px;'></div>", unsafe_allow_html=True)
+                run_copilot = st.button("Analyze Application", use_container_width=True, type="primary", key="run_copilot_btn")
+                st.markdown(f"""
+                <div style="text-align:center; margin-top:12px; font-size:11px; color:#94A3B8;">
+                    {_svg_activity} Pulls data from 5 Snowflake tables and computes AI risk decision
+                </div>
+                """, unsafe_allow_html=True)
+
+            if run_copilot:
+                with st.spinner("Fetching profile from 5 Snowflake tables & computing AI decision..."):
+                    try:
+                        profile = sf.get_underwriting_profile(selected_cust_id)
+                        if profile:
+                            decision = sf.compute_underwriting_decision(profile)
+                            st.session_state["uw_copilot_profile"] = profile
+                            st.session_state["uw_copilot_decision"] = decision
+                        else:
+                            st.warning(f"No premium calculation data found for {selected_cust_id}.")
+                    except Exception as e:
+                        st.error(f"Copilot error: {e}")
+
+            # =====================================================================
+            # SECTION 3D: RESULTS DASHBOARD
+            # =====================================================================
+            if "uw_copilot_decision" in st.session_state and "uw_copilot_profile" in st.session_state:
+                decision = st.session_state["uw_copilot_decision"]
+                profile = st.session_state["uw_copilot_profile"]
+                bucket = decision["bucket"]
+                final_p = float(profile.get('FINAL_PREMIUM', 0) or 0)
+                base_p = float(profile.get('BASE_PREMIUM', 0) or 0)
+                ml_p = float(profile.get('ML_PREDICTED_PREMIUM', 0) or 0)
+
+                if bucket == "AUTO_APPROVE":
+                    card_cls = "approve"; indicator_cls = "green"; score_color = "#059669"; label_text = "AUTO-APPROVE"; metric_cls = "green"
+                    decision_svg = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
+                elif bucket == "HUMAN_REVIEW":
+                    card_cls = "review"; indicator_cls = "yellow"; score_color = "#D97706"; label_text = "HUMAN REVIEW"; metric_cls = "amber"
+                    decision_svg = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
+                else:
+                    card_cls = "decline"; indicator_cls = "red"; score_color = "#DC2626"; label_text = "DECLINE / ESCALATE"; metric_cls = "red"
+                    decision_svg = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+
+                confidence = max(0.0, min(1.0, 1.0 - abs(decision['score'] - 0.5) * 0.5))
+
+                # Metric Cards Row
+                st.markdown(f"""
+                <div class="cp-results-grid">
+                    <div class="cp-metric-card {metric_cls}">
+                        <div class="cp-metric-label">Risk Score</div>
+                        <div class="cp-metric-value" style="color:{score_color};">{decision['score']:.2f}</div>
+                        <div class="cp-metric-sub">Composite risk index</div>
+                    </div>
+                    <div class="cp-metric-card {metric_cls}">
+                        <div class="cp-metric-label">Decision</div>
+                        <div class="cp-metric-value" style="color:{score_color}; font-size:18px; letter-spacing:0.5px;">{label_text}</div>
+                        <div class="cp-metric-sub">AI routing bucket</div>
+                    </div>
+                    <div class="cp-metric-card blue">
+                        <div class="cp-metric-label">Premium Quote</div>
+                        <div class="cp-metric-value" style="color:#2563EB;">${final_p:,.0f}</div>
+                        <div class="cp-metric-sub">Annual premium</div>
+                    </div>
+                    <div class="cp-metric-card blue">
+                        <div class="cp-metric-label">Confidence</div>
+                        <div class="cp-metric-value" style="color:#2563EB;">{confidence:.0%}</div>
+                        <div class="cp-metric-sub">Model certainty</div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
+                # Decision Banner
+                st.markdown(f"""
+                <div class="cp-decision-banner {card_cls}">
+                    <div class="cp-decision-indicator {indicator_cls}">{decision_svg}</div>
+                    <div class="cp-decision-text">
+                        <div class="cp-decision-title" style="color:{score_color};">{label_text}</div>
+                        <div class="cp-decision-action" style="color:{score_color};">{decision['action']}</div>
+                        <div class="cp-decision-meta">
+                            <span>Applicant: <b>{profile.get('FULL_NAME','N/A')}</b></span>
+                            <span>Policy: <b>{profile.get('POLICY_TYPE','N/A')} / {profile.get('PLAN_TIER','N/A')}</b></span>
+                            <span>Premium: <b>${final_p:,.2f}</b></span>
+                            <span>ML Predicted: <b>${ml_p:,.2f}</b></span>
+                        </div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
+        else:
+            st.info("No customer records with premium calculations found. Ensure PREMIUM_CALCULATIONS is populated.")
+
+        # =====================================================================
+        # SECTION 4: XAI RISK FACTOR BREAKDOWN
+        # =====================================================================
+        if "uw_copilot_decision" in st.session_state and "uw_copilot_profile" in st.session_state:
+            decision = st.session_state["uw_copilot_decision"]
+            profile = st.session_state["uw_copilot_profile"]
+            final_p = float(profile.get('FINAL_PREMIUM', 0) or 0)
+            reasons = decision.get("reasons", [])
+
+            if reasons:
+                with st.container(border=True):
+                    st.markdown(f"""
+                    <div style="display:flex; align-items:center; gap:10px; padding-bottom:10px; margin-bottom:12px; border-bottom:1px solid #F1F5F9;">
+                        {_svg_bar_chart}
+                        <span style="font-size:15px; font-weight:800; color:#0F172A;">Explainable AI (XAI) Risk Factor Breakdown</span>
+                        <span style="font-size:11px; font-weight:600; font-family:monospace; background:#F1F5F9; color:#475569; padding:4px 10px; border-radius:6px; border:1px solid #E2E8F0;">PREMIUM_CALCULATIONS.FACTOR_BREAKDOWN</span>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+                    import plotly.graph_objects as go
+                    factor_names = [r[0] for r in reasons]
+                    factor_impacts = [r[2] for r in reasons]
+
+                    fig_waterfall = go.Figure(go.Waterfall(
+                        name="Risk Impact", orientation="h",
+                        measure=["relative"] * len(factor_names) + ["total"],
+                        y=factor_names + ["TOTAL SCORE"],
+                        x=[round(v * 100, 1) for v in factor_impacts] + [None],
+                        text=[f"{v:+.0%}" for v in factor_impacts] + [f"{decision['score']:.0%}"],
+                        textposition="outside",
+                        connector={"line": {"color": "#E2E8F0", "width": 1}},
+                        increasing={"marker": {"color": "#EF4444"}},
+                        decreasing={"marker": {"color": "#10B981"}},
+                        totals={"marker": {"color": decision["color"]}},
+                        hovertemplate="<b>%{y}</b><br>Impact: %{text}<extra></extra>"
+                    ))
+                    fig_waterfall.update_layout(
+                        height=300, margin=dict(l=10, r=60, t=10, b=10),
+                        plot_bgcolor="#FFFFFF", paper_bgcolor="#FFFFFF",
+                        xaxis=dict(title="Risk Impact (%)", gridcolor="#F1F5F9", tickfont=dict(size=11, color="#64748B"), zeroline=True, zerolinecolor="#CBD5E1"),
+                        yaxis=dict(tickfont=dict(size=11, color="#334155"), autorange="reversed"),
+                        showlegend=False
+                    )
+                    st.plotly_chart(fig_waterfall, use_container_width=True)
+
+                    xai_rows = ""
+                    for factor, value, impact, explanation in reasons:
+                        if impact > 0.05:
+                            impact_color = "#DC2626"; impact_icon = "&#9650;"
+                        elif impact < -0.01:
+                            impact_color = "#10B981"; impact_icon = "&#9660;"
+                        else:
+                            impact_color = "#64748B"; impact_icon = "&#9679;"
+                        xai_rows += (
+                            f'<div style="display:grid; grid-template-columns:1.5fr 1fr 0.8fr 2fr; padding:8px 12px; border-bottom:1px solid #F1F5F9; font-size:13px; align-items:center;">'
+                            f'<span style="font-weight:600; color:#0F172A;">{factor}</span>'
+                            f'<span style="color:#334155; font-family:monospace;">{value}</span>'
+                            f'<span style="color:{impact_color}; font-weight:700;">{impact_icon} {impact:+.0%}</span>'
+                            f'<span style="color:#64748B; font-size:12px;">{explanation}</span>'
+                            f'</div>'
+                        )
+                    st.markdown(
+                        '<div style="border:1px solid #E2E8F0; border-radius:8px; overflow:hidden; margin-top:4px;">'
+                        '<div style="display:grid; grid-template-columns:1.5fr 1fr 0.8fr 2fr; padding:10px 12px; background:#F8FAFC; border-bottom:1px solid #E2E8F0; font-size:11px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:0.5px;">'
+                        '<span>RISK FACTOR</span><span>VALUE</span><span>IMPACT</span><span>EXPLANATION</span>'
+                        '</div>'
+                        f'{xai_rows}'
+                        '</div>',
+                        unsafe_allow_html=True
+                    )
+                    fb = profile.get("FACTOR_BREAKDOWN", "")
+                    if fb:
+                        st.caption(f"Snowflake FACTOR_BREAKDOWN: {fb}")
+
+            # =====================================================================
+            # SECTION 5: ACTUARIAL MULTIPLIERS & PREMIUM SUMMARY
+            # =====================================================================
+            with st.container(border=True):
+                st.markdown(f"""
+                <div style="display:flex; align-items:center; gap:10px; padding-bottom:10px; margin-bottom:12px; border-bottom:1px solid #F1F5F9;">
+                    {_svg_trending}
+                    <span style="font-size:15px; font-weight:800; color:#0F172A;">Actuarial Multipliers &amp; Premium Summary</span>
+                    <span style="font-size:11px; font-weight:600; font-family:monospace; background:#F1F5F9; color:#475569; padding:4px 10px; border-radius:6px; border:1px solid #E2E8F0;">PREMIUM_CALCULATIONS</span>
+                </div>
+                """, unsafe_allow_html=True)
+                mult_col1, mult_col2 = st.columns([1.5, 1])
+                with mult_col1:
+                    import plotly.graph_objects as go
+                    mult_data = {
+                        "Factor": ["Age", "Location", "Health", "Lifestyle", "Claims History"],
+                        "Multiplier": [
+                            float(profile.get("AGE_FACTOR", 1.0) or 1.0),
+                            float(profile.get("LOCATION_FACTOR", 1.0) or 1.0),
+                            float(profile.get("HEALTH_FACTOR", 1.0) or 1.0),
+                            float(profile.get("LIFESTYLE_FACTOR", 1.0) or 1.0),
+                            float(profile.get("CLAIMS_HISTORY_FACTOR", 1.0) or 1.0),
+                        ]
+                    }
+                    mult_df = pd.DataFrame(mult_data)
+                    fig_mult = go.Figure(go.Bar(
+                        x=mult_df["Multiplier"], y=mult_df["Factor"], orientation="h",
+                        marker_color=["#EF4444" if v > 1.5 else "#F59E0B" if v > 1.2 else "#10B981" for v in mult_df["Multiplier"]],
+                        text=[f"{v:.2f}x" for v in mult_df["Multiplier"]], textposition="outside",
+                        hovertemplate="<b>%{y}</b>: %{x:.2f}x<extra></extra>"
+                    ))
+                    fig_mult.add_vline(x=1.0, line_dash="dash", line_color="#94A3B8", annotation_text="Baseline 1.0x")
+                    fig_mult.update_layout(
+                        height=220, margin=dict(l=10, r=40, t=10, b=10),
+                        plot_bgcolor="#FFFFFF", paper_bgcolor="#FFFFFF",
+                        xaxis=dict(gridcolor="#F1F5F9", range=[0, max(mult_df["Multiplier"]) * 1.3]),
+                        yaxis=dict(autorange="reversed")
+                    )
+                    st.plotly_chart(fig_mult, use_container_width=True)
+
+                with mult_col2:
+                    base_p = float(profile.get('BASE_PREMIUM', 0) or 0)
+                    ml_p = float(profile.get('ML_PREDICTED_PREMIUM', 0) or 0)
+                    discount = float(profile.get('DISCOUNT_APPLIED', 0) or 0)
+                    st.markdown(f"""
+                    <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:16px;">
+                        <div style="font-weight:800; font-size:14px; color:#0F172A; margin-bottom:12px;">Premium Summary</div>
+                        <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #F1F5F9;">
+                            <span style="color:#64748B; font-size:13px;">Base Premium</span>
+                            <span style="font-weight:700; color:#0F172A;">${base_p:,.2f}</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #F1F5F9;">
+                            <span style="color:#64748B; font-size:13px;">After Factors</span>
+                            <span style="font-weight:700; color:#0F172A;">${final_p:,.2f}</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #F1F5F9;">
+                            <span style="color:#64748B; font-size:13px;">ML Predicted</span>
+                            <span style="font-weight:700; color:#0284C7;">${ml_p:,.2f}</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #F1F5F9;">
+                            <span style="color:#10B981; font-size:13px;">Discount Applied</span>
+                            <span style="font-weight:700; color:#10B981;">-${discount:,.2f}</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; padding:10px 0 0 0;">
+                            <span style="font-weight:800; font-size:15px; color:#0F172A;">Final Quote</span>
+                            <span style="font-weight:800; font-size:18px; color:{decision['color']};">${final_p:,.2f}</span>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+            # =====================================================================
+            # SECTION 6: AUTO-BINDER OUTPUT DOCUMENT
+            # =====================================================================
             st.markdown(f"""
-            <div class="driver-tag-row">
-                <span><b>Credit Score Impact</b> ({credit})</span>
-                <span style="color:#0284C7;"><b>{credit_mult}</b></span>
-            </div>
-            <div class="driver-tag-row">
-                <span><b>Age Bracket Weight</b> ({age} yrs)</span>
-                <span style="color:#EA580C;"><b>{age_mult}</b></span>
-            </div>
-            <div class="driver-tag-row">
-                <span><b>Coverage Exposure</b> (${coverage:,})</span>
-                <span style="color:#16A34A;"><b>{cov_mult}</b></span>
+            <div class="cp-binder-card">
+                <div class="cp-binder-header">
+                    <div class="cp-binder-title">
+                        {_svg_file_check.replace('stroke="#059669"', 'stroke="#0F172A"')}
+                        <span>Policy Binder Document</span>
+                    </div>
+                    <span class="cp-binder-badge">AUTO-GENERATED</span>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+                    <div>
+                        <div class="cp-binder-section">
+                            <div class="cp-binder-section-title">Applicant Summary</div>
+                            <div class="cp-binder-row"><span class="cp-binder-label">Name</span><span class="cp-binder-value">{profile.get('FULL_NAME','N/A')}</span></div>
+                            <div class="cp-binder-row"><span class="cp-binder-label">Customer ID</span><span class="cp-binder-value">{profile.get('CUSTOMER_ID','N/A')}</span></div>
+                            <div class="cp-binder-row"><span class="cp-binder-label">Policy Type</span><span class="cp-binder-value">{profile.get('POLICY_TYPE','N/A')}</span></div>
+                            <div class="cp-binder-row"><span class="cp-binder-label">Plan Tier</span><span class="cp-binder-value">{profile.get('PLAN_TIER','N/A')}</span></div>
+                        </div>
+                        <div class="cp-binder-section">
+                            <div class="cp-binder-section-title">Risk Assessment</div>
+                            <div class="cp-binder-row"><span class="cp-binder-label">Risk Score</span><span class="cp-binder-value" style="color:{score_color};">{decision['score']:.2f}</span></div>
+                            <div class="cp-binder-row"><span class="cp-binder-label">Credit Score</span><span class="cp-binder-value">{profile.get('CREDIT_SCORE','N/A')}</span></div>
+                            <div class="cp-binder-row"><span class="cp-binder-label">Age</span><span class="cp-binder-value">{profile.get('AGE','N/A')}</span></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="cp-binder-section">
+                            <div class="cp-binder-section-title">Premium Recommendation</div>
+                            <div class="cp-binder-row"><span class="cp-binder-label">Base Premium</span><span class="cp-binder-value">${base_p:,.2f}</span></div>
+                            <div class="cp-binder-row"><span class="cp-binder-label">Final Premium</span><span class="cp-binder-value" style="color:#2563EB; font-weight:800;">${final_p:,.2f}</span></div>
+                            <div class="cp-binder-row"><span class="cp-binder-label">ML Predicted</span><span class="cp-binder-value">${ml_p:,.2f}</span></div>
+                        </div>
+                        <div class="cp-binder-section">
+                            <div class="cp-binder-section-title">Underwriting Decision</div>
+                            <div class="cp-binder-row"><span class="cp-binder-label">Decision</span><span class="cp-binder-value" style="color:{score_color};">{label_text}</span></div>
+                            <div class="cp-binder-row"><span class="cp-binder-label">Action</span><span class="cp-binder-value">{decision['action']}</span></div>
+                        </div>
+                        <div class="cp-binder-section">
+                            <div class="cp-binder-section-title">AI Explanation</div>
+                            <div style="font-size:12px; color:#475569; line-height:1.6;">
+                                The AI engine evaluated {len(decision.get('reasons',[]))} risk factors across actuarial multipliers, credit history, and ML predictions to reach this determination.
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             """, unsafe_allow_html=True)
-    except Exception as e:
-        render_snowflake_error(e, "Live Prediction Model")
 
-    st.markdown("</div>", unsafe_allow_html=True)
+            # =====================================================================
+            # SECTION 7: EXPORT BUTTONS
+            # =====================================================================
+            btn_col1, btn_col2, btn_col3 = st.columns([1, 1, 1])
+            with btn_col1:
+                if st.button("Generate Policy Binder PDF", use_container_width=True, type="primary", key="copilot_pdf_btn"):
+                    with st.spinner("Generating PDF..."):
+                        try:
+                            pdf_bytes = sf.generate_binder_pdf(profile, decision, final_p)
+                            st.session_state["copilot_pdf"] = pdf_bytes
+                            st.session_state["copilot_pdf_name"] = f"Policy_Binder_{profile.get('CUSTOMER_ID','')}_{profile.get('POLICY_TYPE','')}.pdf"
+                        except Exception as e:
+                            st.error(f"PDF generation error: {e}")
+
+            with btn_col2:
+                if st.button("Get Agent Underwriting Opinion", use_container_width=True, key="copilot_agent_popup_btn"):
+                    st.session_state.pop("agent_chat_history", None)
+                    st.session_state["show_agent_dialog"] = True
+
+            if st.session_state.get("show_agent_dialog", False):
+                _show_agent_opinion_dialog()
+
+            with btn_col3:
+                if "copilot_pdf" in st.session_state:
+                    st.download_button(
+                        label="Download Policy Binder PDF",
+                        data=st.session_state["copilot_pdf"],
+                        file_name=st.session_state.get("copilot_pdf_name", "Policy_Binder.pdf"),
+                        mime="application/pdf",
+                        use_container_width=True,
+                        key="pdf_download_btn"
+                    )
+
+            if "copilot_pdf" in st.session_state and "pdf_download_btn" not in st.session_state:
+                st.success("Policy Binder PDF generated successfully!")
+
+            # =====================================================================
+            # SECTION 8: AI COPILOT ASSISTANT PANEL
+            # =====================================================================
+            st.markdown(f"""
+            <div class="cp-copilot-panel">
+                <div class="cp-copilot-header-bar">
+                    <div class="cp-copilot-avatar">{_svg_sparkles}</div>
+                    <div>
+                        <div class="cp-copilot-name">AI Underwriting Copilot</div>
+                        <div class="cp-copilot-tag">Powered by Snowflake Cortex</div>
+                    </div>
+                </div>
+                <div class="cp-chat-bubble ai">
+                    Analysis complete for <b>{profile.get('FULL_NAME','this applicant')}</b>.
+                    The risk score of <b>{decision['score']:.2f}</b> was determined by evaluating {len(decision.get('reasons',[]))} actuarial factors.
+                    Decision: <b style="color:{score_color};">{label_text}</b>.
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+            cp_assist_col1, cp_assist_col2, cp_assist_col3 = st.columns(3)
+            with cp_assist_col1:
+                if st.button("Why was this decision made?", use_container_width=True, key="cp_why_btn"):
+                    st.session_state["cp_copilot_q"] = "why_decision"
+            with cp_assist_col2:
+                if st.button("Explain risk factors", use_container_width=True, key="cp_explain_btn"):
+                    st.session_state["cp_copilot_q"] = "explain_risk"
+            with cp_assist_col3:
+                if st.button("Generate underwriting summary", use_container_width=True, key="cp_summary_btn"):
+                    st.session_state["cp_copilot_q"] = "gen_summary"
+
+            if "cp_copilot_q" in st.session_state:
+                q_type = st.session_state["cp_copilot_q"]
+                reasons_list = decision.get("reasons", [])
+                if q_type == "why_decision":
+                    reason_text = f"The decision of **{label_text}** was reached because the composite risk score is **{decision['score']:.2f}**. "
+                    if bucket == "AUTO_APPROVE":
+                        reason_text += "This score falls within the auto-approval threshold (below 0.4), indicating low overall risk across all evaluated factors."
+                    elif bucket == "HUMAN_REVIEW":
+                        reason_text += "This score falls in the review band (0.4-0.7), requiring human underwriter assessment before final binding."
+                    else:
+                        reason_text += "This score exceeds the decline threshold (above 0.7), indicating elevated risk that requires escalation."
+                    st.info(reason_text)
+                elif q_type == "explain_risk":
+                    if reasons_list:
+                        explain_md = "**Risk Factor Analysis:**\n\n"
+                        for factor, value, impact, explanation in reasons_list:
+                            direction = "increases" if impact > 0 else "decreases"
+                            explain_md += f"- **{factor}** ({value}): {direction} risk by {abs(impact):.0%} - {explanation}\n"
+                        st.info(explain_md)
+                    else:
+                        st.info("No detailed risk factors available for this applicant.")
+                elif q_type == "gen_summary":
+                    summary = (
+                        f"**Underwriting Summary for {profile.get('FULL_NAME','N/A')}**\n\n"
+                        f"- **Customer ID:** {profile.get('CUSTOMER_ID','N/A')}\n"
+                        f"- **Policy:** {profile.get('POLICY_TYPE','N/A')} / {profile.get('PLAN_TIER','N/A')}\n"
+                        f"- **Risk Score:** {decision['score']:.2f}\n"
+                        f"- **Decision:** {label_text}\n"
+                        f"- **Premium:** ${final_p:,.2f}\n"
+                        f"- **Action:** {decision['action']}\n\n"
+                        f"The AI engine evaluated the applicant across {len(reasons_list)} risk dimensions. "
+                        f"Based on the composite scoring model, this application has been routed to the **{label_text}** bucket."
+                    )
+                    st.info(summary)
+
 
 
 # =========================================================================
@@ -1477,6 +2606,266 @@ elif "Claims & Fraud Console" in selected_tab:
             st.info("Select a valid claim from the table to inspect details.")
 
         st.markdown("</div>", unsafe_allow_html=True)
+
+    # ── Cortex Search & Claims Intelligence ──
+    # ── Top Compact Header ──
+    h_col1, h_col2 = st.columns([3, 1])
+    with h_col1:
+        st.markdown("""
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:2px;">
+            <span style="font-size:24px;">🔎</span>
+            <span style="font-size:22px; font-weight:800; color:#0F172A; letter-spacing:-0.5px;">Search Claims Intelligence</span>
+        </div>
+        <div style="font-size:13px; color:#64748B; margin-bottom:12px;">
+            Search claims data and use AI-powered fraud intelligence to investigate claims.
+        </div>
+        """, unsafe_allow_html=True)
+    with h_col2:
+        is_connected = st.session_state.get("sf_connected", True)
+        status_label = "Cortex Search Connected" if is_connected else "Offline"
+        status_bg = "#F0FDF4" if is_connected else "#FEF2F2"
+        status_border = "#BBF7D0" if is_connected else "#FCA5A5"
+        status_text = "#15803D" if is_connected else "#991B1B"
+        dot_color = "#22C55E" if is_connected else "#EF4444"
+        
+        st.markdown(f"""
+        <div style="display:flex; justify-content:flex-end; align-items:center; height:100%; padding-top:4px;">
+            <span style="background:{status_bg}; border:1px solid {status_border}; color:{status_text}; font-size:12px; font-weight:600; padding:4px 12px; border-radius:20px; display:inline-flex; align-items:center; gap:6px;">
+                <span style="width:7px; height:7px; background-color:{dot_color}; border-radius:50%; display:inline-block;"></span> ● {status_label}
+            </span>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # Search Bar Component
+    search_col1, search_col2 = st.columns([3.5, 1])
+    with search_col1:
+        search_query = st.text_input(
+            "Search Claim ID, policy number, or claim details...",
+            placeholder="e.g. CLM-00177, suspicious auto claims, duplicate billing, staged accident",
+            key="claims_search_input",
+            label_visibility="collapsed"
+        )
+    with search_col2:
+        search_clicked = st.button("Search ➜", use_container_width=True, key="claims_search_btn")
+
+    # Quick Suggestion Chips for Search
+    st.markdown("<div style='font-size:11px; font-weight:600; color:#94A3B8; margin-top:4px; margin-bottom:6px;'>Quick Search Suggestions:</div>", unsafe_allow_html=True)
+    sugg_cols = st.columns(4)
+    sample_searches = [
+        "CLM-00177",
+        "Suspicious auto claims",
+        "Duplicate billing",
+        "Staged accident"
+    ]
+    for idx, s_term in enumerate(sample_searches):
+        with sugg_cols[idx]:
+            if st.button(f"🔍 {s_term}", key=f"claim_sugg_{idx}", use_container_width=True):
+                st.session_state["claims_pending_search"] = s_term
+                st.rerun()
+
+    active_search_query = None
+    if search_clicked and search_query:
+        active_search_query = search_query
+    elif st.session_state.get("claims_pending_search"):
+        active_search_query = st.session_state.pop("claims_pending_search")
+
+    if active_search_query:
+        with st.spinner("🔎 Searching claim data via Cortex Search..."):
+            try:
+                search_results = sf.search_claims(active_search_query)
+                st.session_state["claims_search_results"] = search_results
+                st.session_state["claims_search_query"] = active_search_query
+            except Exception as e:
+                print(f"[SECURITY REDACTED LOG] Search error: {str(e)}")
+                st.warning("⚠️ Unable to retrieve claim information. Please check the claim query and try again.")
+
+    if "claims_search_results" in st.session_state and not st.session_state["claims_search_results"].empty:
+        sr = st.session_state["claims_search_results"]
+        st.markdown(f"<div style='margin-top:12px; margin-bottom:8px; font-size:13px; font-weight:600; color:#334155;'>Found <span style='color:#2563EB;'>{len(sr)}</span> results for: <i>\"{st.session_state.get('claims_search_query', '')}\"</i></div>", unsafe_allow_html=True)
+        display_cols = [c for c in ["CLAIM_ID", "FRAUD_TYPE", "CLAIM_TYPE", "CLAIM_AMOUNT", "ALERT_STATUS", "INVESTIGATION_NOTES"] if c in sr.columns]
+        st.dataframe(sr[display_cols] if display_cols else sr, use_container_width=True, height=200, hide_index=True)
+    elif active_search_query:
+        st.info("No matching claims found.")
+
+    st.markdown("<hr style='margin:24px 0; border:0; border-top:1px solid #E2E8F0;'>", unsafe_allow_html=True)
+
+    # ── AI FRAUD TRIAGE ASSISTANT (CONVERSATIONAL UX) ──
+    f_hdr1, f_hdr2 = st.columns([3, 1])
+    with f_hdr1:
+        st.markdown("""
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:2px;">
+            <span style="font-size:24px;">🛡️</span>
+            <span style="font-size:20px; font-weight:800; color:#0F172A; letter-spacing:-0.5px;">AI Fraud Triage Assistant</span>
+        </div>
+        <div style="font-size:13px; color:#64748B; margin-bottom:12px;">
+            Analyze claims for potential fraud indicators and explain risk factors identified in available claim data.
+        </div>
+        """, unsafe_allow_html=True)
+    with f_hdr2:
+        if st.session_state.get("fraud_chat_history"):
+            if st.button("🔄 Reset Assistant", key="reset_fraud_chat", use_container_width=True):
+                st.session_state.pop("fraud_chat_history", None)
+                st.session_state.pop("fraud_dialog_claim_id", None)
+                st.session_state.pop("fraud_dialog_claim_row", None)
+                st.rerun()
+
+    # Determine Active Claim Context
+    active_claim_id = selected_claim_id or st.session_state.get("fraud_dialog_claim_id", "")
+    active_claim_row = st.session_state.get("fraud_dialog_claim_row", {})
+    
+    if selected_claim_id and selected_claim_id != st.session_state.get("fraud_dialog_claim_id"):
+        try:
+            detail_df = sf.get_claim_detail(selected_claim_id)
+            if detail_df is not None and not detail_df.empty:
+                active_claim_row = detail_df.iloc[0].to_dict()
+                st.session_state["fraud_dialog_claim_id"] = selected_claim_id
+                st.session_state["fraud_dialog_claim_row"] = active_claim_row
+            else:
+                st.session_state["fraud_dialog_claim_id"] = selected_claim_id
+                st.session_state["fraud_dialog_claim_row"] = {}
+        except Exception:
+            pass
+
+    # Context Header Badge if a claim is active
+    if active_claim_id:
+        fraud_score = float(active_claim_row.get("FRAUD_SCORE", active_claim_row.get("CONFIDENCE_SCORE", 0)) or 0)
+        risk_label = "High Risk" if fraud_score >= 0.70 else ("Moderate Risk" if fraud_score >= 0.40 else "Low Risk")
+        risk_color = "#DC2626" if fraud_score >= 0.70 else ("#D97706" if fraud_score >= 0.40 else "#059669")
+        risk_bg = "#FEF2F2" if fraud_score >= 0.70 else ("#FFFBEB" if fraud_score >= 0.40 else "#F0FDF4")
+        
+        st.markdown(f"""
+        <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:12px; padding:12px 16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-size:13px; font-weight:600; color:#334155;">
+                <span style="color:#64748B;">Active Claim Context:</span> <b>{active_claim_id}</b> 
+                <span style="color:#94A3B8; margin:0 6px;">|</span> {active_claim_row.get('CLAIM_TYPE','Claim')}
+                <span style="color:#94A3B8; margin:0 6px;">|</span> Amount: <b>${float(active_claim_row.get('CLAIM_AMOUNT',0) or 0):,.0f}</b>
+            </div>
+            <span style="background:{risk_bg}; border:1px solid #E2E8F0; color:{risk_color}; font-size:11px; font-weight:700; padding:4px 10px; border-radius:12px;">
+                {risk_label} ({fraud_score:.2f})
+            </span>
+        </div>
+        """, unsafe_allow_html=True)
+
+    if "fraud_chat_history" not in st.session_state:
+        st.session_state["fraud_chat_history"] = []
+
+    # ── EMPTY STATE OR CONVERSATION ──
+    if not st.session_state["fraud_chat_history"]:
+        if not active_claim_id:
+            st.markdown("""
+            <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:16px; padding:32px 24px; text-align:center; margin:10px 0 24px 0; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
+                <div style="font-size:42px; margin-bottom:12px;">🛡️</div>
+                <div style="font-size:20px; font-weight:700; color:#0F172A; margin-bottom:6px;">Claims Intelligence Assistant</div>
+                <div style="font-size:14px; font-weight:600; color:#3B82F6; margin-bottom:10px;">Select or search a claim to investigate details & run AI fraud triage.</div>
+                <div style="font-size:13px; color:#64748B; max-width:540px; margin:0 auto 24px auto; line-height:1.5;">
+                    Select a claim from the table above or use Cortex Search to evaluate risk factors, red flags, and SIU recommendations.
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("<div style='font-size:12px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;'>Try analyzing a sample claim:</div>", unsafe_allow_html=True)
+            chip_cols = st.columns(3)
+            sample_claims = ["CLM-00177", "CLM-00044", "CLM-00035"]
+            for idx, c_sample in enumerate(sample_claims):
+                with chip_cols[idx]:
+                    if st.button(f"🔍 Analyze {c_sample}", key=f"sample_claim_btn_{idx}", use_container_width=True):
+                        st.session_state["fraud_dialog_claim_id"] = c_sample
+                        try:
+                            detail_df = sf.get_claim_detail(c_sample)
+                            if detail_df is not None and not detail_df.empty:
+                                st.session_state["fraud_dialog_claim_row"] = detail_df.iloc[0].to_dict()
+                        except Exception:
+                            pass
+                        st.rerun()
+        else:
+            # Run initial triage assessment automatically for active claim
+            claim_context = (
+                f"Claim ID: {active_claim_id}, Type: {active_claim_row.get('CLAIM_TYPE', 'N/A')}, "
+                f"Amount: ${float(active_claim_row.get('CLAIM_AMOUNT', 0) or 0):,.0f}, "
+                f"Status: {active_claim_row.get('CLAIM_STATUS', 'N/A')}, "
+                f"Fraud Type: {active_claim_row.get('FRAUD_TYPE', 'N/A')}, "
+                f"Investigation Notes: {active_claim_row.get('INVESTIGATION_NOTES', 'None')}"
+            )
+            with st.spinner("🛡️ Analyzing claim for fraud indicators & risk factors..."):
+                try:
+                    initial_prompt = (
+                        f"Perform a detailed fraud triage assessment for this insurance claim. "
+                        f"{claim_context}. "
+                        f"Provide: 1) Fraud risk level (High/Medium/Low), "
+                        f"2) Red flags identified, "
+                        f"3) Recommended next steps for the adjuster, "
+                        f"4) Whether SIU escalation is warranted and why. Keep it concise."
+                    )
+                    initial_response = sf.ask_claims_fraud_agent(initial_prompt)
+                except Exception as e:
+                    print(f"[SECURITY REDACTED LOG] Fraud agent error: {str(e)}")
+                    initial_response = "⚠️ Unable to complete the fraud assessment. Please try again."
+            st.session_state["fraud_chat_history"].append({"role": "assistant", "content": initial_response})
+            st.rerun()
+    else:
+        # Render Chat History
+        for msg in st.session_state["fraud_chat_history"]:
+            if msg["role"] == "user":
+                with st.chat_message("user"):
+                    st.markdown(msg["content"])
+            else:
+                with st.chat_message("assistant", avatar="🛡️"):
+                    st.markdown(msg["content"])
+
+    # Suggested Question Chips during active conversation
+    if st.session_state["fraud_chat_history"] and active_claim_id:
+        st.markdown("<div style='font-size:11px; font-weight:600; color:#94A3B8; margin-top:16px; margin-bottom:4px;'>Suggested investigation questions:</div>", unsafe_allow_html=True)
+        fc_cols = st.columns(3)
+        fraud_suggs = ["What are the red flags?", "Should this go to SIU?", "What evidence is needed?"]
+        for idx, f_sug in enumerate(fraud_suggs):
+            with fc_cols[idx]:
+                if st.button(f_sug, key=f"fraud_conv_chip_{idx}", use_container_width=True):
+                    st.session_state["fraud_pending_question"] = f_sug
+                    st.rerun()
+
+    # Chat Input for Follow-up Questions
+    prompt_to_run = None
+    chat_input_val = st.chat_input("Ask about this claim or fraud assessment...", key="claims_fraud_chat_input_box")
+    
+    if chat_input_val:
+        prompt_to_run = chat_input_val
+    elif st.session_state.get("fraud_pending_question"):
+        prompt_to_run = st.session_state.pop("fraud_pending_question")
+
+    if prompt_to_run and active_claim_id:
+        st.session_state["fraud_chat_history"].append({"role": "user", "content": prompt_to_run})
+        
+        with st.chat_message("user"):
+            st.markdown(prompt_to_run)
+            
+        with st.chat_message("assistant", avatar="🛡️"):
+            with st.spinner("🛡️ Evaluating claim details & generating insights..."):
+                try:
+                    claim_context = (
+                        f"Claim ID: {active_claim_id}, Type: {active_claim_row.get('CLAIM_TYPE', 'N/A')}, "
+                        f"Amount: ${float(active_claim_row.get('CLAIM_AMOUNT', 0) or 0):,.0f}, "
+                        f"Status: {active_claim_row.get('CLAIM_STATUS', 'N/A')}, "
+                        f"Fraud Type: {active_claim_row.get('FRAUD_TYPE', 'N/A')}, "
+                        f"Investigation Notes: {active_claim_row.get('INVESTIGATION_NOTES', 'None')}"
+                    )
+                    recent_context = ""
+                    for m in st.session_state["fraud_chat_history"][-4:]:
+                        role_label = "Assistant" if m["role"] == "assistant" else "User"
+                        recent_context += f"{role_label}: {m['content'][:300]}\n"
+                        
+                    follow_up_prompt = (
+                        f"You are an AI fraud investigation expert. Claim context: {claim_context}. "
+                        f"Recent conversation:\n{recent_context}\n"
+                        f"User asks: {prompt_to_run}\n"
+                        f"Provide a concise, professional answer focused on this claim."
+                    )
+                    follow_response = sf.ask_claims_fraud_agent(follow_up_prompt)
+                except Exception as e:
+                    print(f"[SECURITY REDACTED LOG] Fraud follow-up error: {str(e)}")
+                    follow_response = "⚠️ Unable to complete the fraud assessment. Please try again."
+            st.markdown(follow_response)
+            st.session_state["fraud_chat_history"].append({"role": "assistant", "content": follow_response})
+        st.rerun()
 
 
 # =========================================================================
@@ -1957,6 +3346,219 @@ elif "Risk & Pricing Dashboard" in selected_tab:
             if st.button("›", key="pg_next", disabled=(current_p >= 43)):
                 st.session_state.at_risk_page = current_p + 1
                 st.rerun()
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    # ── AI Risk Intelligence Dialog ──
+    @st.dialog("AI Risk Intelligence", width="small")
+    def _show_risk_dialog():
+        import html as _html
+
+        status_color = "#2563EB"; status_text = "Portfolio Analysis"; status_bg = "#EFF6FF"; status_border = "#BFDBFE"
+
+        st.markdown(f"""
+        <style>
+            [data-testid="stDialog"] > div > div {{ max-width: 600px !important; }}
+            .risk-chat-header {{ display:flex; align-items:center; gap:12px; padding-bottom:12px; margin-bottom:4px; border-bottom:1px solid #F1F5F9; }}
+            .risk-chat-avatar {{ width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,#2563EB,#0EA5E9); display:flex; align-items:center; justify-content:center; flex-shrink:0; }}
+            .risk-chat-avatar svg {{ stroke:white; }}
+            .risk-chat-name {{ font-size:15px; font-weight:700; color:#0F172A; }}
+            .risk-chat-tag {{ font-size:11px; color:#64748B; }}
+            .risk-chat-status {{ display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:600; padding:3px 10px; border-radius:12px; margin-left:auto; background:{status_bg}; border:1px solid {status_border}; color:{status_color}; }}
+            .risk-chat-status-dot {{ width:6px; height:6px; border-radius:50%; background:{status_color}; display:inline-block; }}
+            .risk-chat-context {{ background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:10px 14px; margin:8px 0 4px 0; font-size:11px; color:#64748B; }}
+            .risk-chat-context b {{ color:#334155; }}
+            .risk-msg-ai {{ background:linear-gradient(135deg,#EFF6FF,#F0F9FF); border:1px solid #BFDBFE; border-radius:12px 12px 12px 2px; padding:12px 16px; margin:6px 0; font-size:13px; color:#1E293B; line-height:1.7; }}
+            .risk-msg-user {{ background:linear-gradient(135deg,#2563EB,#1D4ED8); color:#FFFFFF; border-radius:12px 12px 2px 12px; padding:10px 16px; margin:6px 0 6px auto; font-size:13px; line-height:1.5; max-width:85%; text-align:right; width:fit-content; margin-left:auto; }}
+            .risk-msg-ai-label {{ font-size:10px; font-weight:600; color:#64748B; margin-bottom:4px; display:flex; align-items:center; gap:4px; }}
+            .risk-msg-user-label {{ font-size:10px; font-weight:600; color:#94A3B8; margin-bottom:4px; text-align:right; }}
+        </style>
+        <div class="risk-chat-header">
+            <div class="risk-chat-avatar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+            <div>
+                <div class="risk-chat-name">AI Risk Intelligence</div>
+                <div class="risk-chat-tag">Ask me about portfolio risk & pricing</div>
+            </div>
+            <div class="risk-chat-status">
+                <span class="risk-chat-status-dot"></span>
+                {status_text}
+            </div>
+        </div>
+        <div class="risk-chat-context">
+            Analyzing <b>Portfolio Risk & Retention</b> &middot;
+            Powered by <b>PORTFOLIO_RISK_RETENTION_AGENT</b>
+        </div>
+        """, unsafe_allow_html=True)
+
+        if "risk_chat_history" not in st.session_state:
+            st.session_state["risk_chat_history"] = []
+
+        initial_query = st.session_state.pop("risk_dialog_initial_query", None)
+
+        if not st.session_state["risk_chat_history"]:
+            query = initial_query or "Summarize the current portfolio risk exposure across all insurance product lines. Include loss ratios, at-risk policy counts, and revenue at risk."
+            with st.spinner("Analyzing portfolio risk..."):
+                try:
+                    initial_response = sf.ask_risk_retention_agent(query)
+                except Exception as e:
+                    initial_response = f"Unable to generate assessment: {e}"
+            st.session_state["risk_chat_history"].append({"role": "user", "content": query})
+            st.session_state["risk_chat_history"].append({"role": "ai", "content": initial_response})
+
+        for msg in st.session_state["risk_chat_history"]:
+            safe_content = _html.escape(str(msg["content"])).replace("\n", "<br>")
+            if msg["role"] == "ai":
+                st.markdown(
+                    '<div class="risk-msg-ai-label">'
+                    '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>'
+                    ' Risk Intelligence Agent</div>'
+                    f'<div class="risk-msg-ai">{safe_content}</div>',
+                    unsafe_allow_html=True
+                )
+            else:
+                st.markdown(
+                    f'<div class="risk-msg-user-label">You</div>'
+                    f'<div class="risk-msg-user">{safe_content}</div>',
+                    unsafe_allow_html=True
+                )
+
+        if len(st.session_state["risk_chat_history"]) <= 3:
+            chip_cols = st.columns(3)
+            suggestions = [
+                "Retention recommendations?",
+                "Loss ratio trends?",
+                "Highest churn policies?"
+            ]
+            for i, sug in enumerate(suggestions):
+                with chip_cols[i]:
+                    if st.button(sug, key=f"risk_chip_{i}", use_container_width=True):
+                        st.session_state["risk_chat_history"].append({"role": "user", "content": sug})
+                        with st.spinner("Thinking..."):
+                            try:
+                                recent_context = ""
+                                for m in st.session_state["risk_chat_history"][-4:]:
+                                    role_label = "Assistant" if m["role"] == "ai" else "User"
+                                    recent_context += f"{role_label}: {m['content'][:300]}\n"
+                                follow_up_prompt = (
+                                    f"You are a portfolio risk intelligence expert. "
+                                    f"Recent conversation:\n{recent_context}\n"
+                                    f"User question: {sug}. Provide a concise, focused answer."
+                                )
+                                follow_response = sf.ask_risk_retention_agent(follow_up_prompt)
+                            except Exception as e:
+                                follow_response = f"Error: {e}"
+                        st.session_state["risk_chat_history"].append({"role": "ai", "content": follow_response})
+                        st.rerun()
+
+        user_question = st.chat_input("Ask about risk & pricing...", key="risk_chat_input")
+        if user_question:
+            st.session_state["risk_chat_history"].append({"role": "user", "content": user_question})
+            recent_context = ""
+            for m in st.session_state["risk_chat_history"][-4:]:
+                role_label = "Assistant" if m["role"] == "ai" else "User"
+                recent_context += f"{role_label}: {m['content'][:300]}\n"
+            with st.spinner("Thinking..."):
+                try:
+                    follow_up_prompt = (
+                        f"You are a portfolio risk intelligence expert. "
+                        f"Recent conversation:\n{recent_context}\n"
+                        f"User asks: {user_question}\n"
+                        f"Provide a concise, professional answer."
+                    )
+                    follow_response = sf.ask_risk_retention_agent(follow_up_prompt)
+                except Exception as e:
+                    follow_response = f"Error: {e}"
+            st.session_state["risk_chat_history"].append({"role": "ai", "content": follow_response})
+            st.rerun()
+
+    # ── AI Risk Intelligence (Agent-Powered) ──
+    st.markdown("""
+    <div class="card-panel">
+        <div class="panel-header">
+            <div class="panel-header-title">
+                <span>🤖 AI Risk Intelligence</span>
+            </div>
+            <div class="panel-header-badge">PORTFOLIO_RISK_RETENTION_AGENT</div>
+        </div>
+    """, unsafe_allow_html=True)
+
+    risk_q_col1, risk_q_col2 = st.columns([3, 1])
+    with risk_q_col1:
+        risk_quick_buttons = st.columns(3)
+        with risk_quick_buttons[0]:
+            if st.button("📊 Summarize portfolio risk", key="risk_q1", use_container_width=True):
+                st.session_state.pop("risk_chat_history", None)
+                st.session_state["risk_dialog_initial_query"] = "Summarize the current portfolio risk exposure across all insurance product lines. Include loss ratios, at-risk policy counts, and revenue at risk."
+                st.session_state["show_risk_dialog"] = True
+        with risk_quick_buttons[1]:
+            if st.button("🎯 Retention recommendations", key="risk_q2", use_container_width=True):
+                st.session_state.pop("risk_chat_history", None)
+                st.session_state["risk_dialog_initial_query"] = "Which policies need immediate retention outreach? Provide the top priority policies with recommended retention actions and expected impact."
+                st.session_state["show_risk_dialog"] = True
+        with risk_quick_buttons[2]:
+            if st.button("📈 Loss ratio trend analysis", key="risk_q3", use_container_width=True):
+                st.session_state.pop("risk_chat_history", None)
+                st.session_state["risk_dialog_initial_query"] = "Analyze the loss ratio trends across policy types. Identify which product lines are deteriorating and recommend corrective pricing actions."
+                st.session_state["show_risk_dialog"] = True
+
+    with risk_q_col2:
+        pass
+
+    risk_custom_q = st.text_input(
+        "Or ask your own question about risk & pricing...",
+        placeholder="e.g. Which auto policies have the highest churn probability?",
+        key="risk_custom_input",
+        label_visibility="collapsed"
+    )
+
+    if risk_custom_q:
+        st.session_state.pop("risk_chat_history", None)
+        st.session_state["risk_dialog_initial_query"] = risk_custom_q
+        st.session_state["show_risk_dialog"] = True
+
+    if st.session_state.get("show_risk_dialog", False):
+        _show_risk_dialog()
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    # ── Cortex Analyst: Semantic Model Query ──
+    st.markdown("""
+    <div class="card-panel">
+        <div class="panel-header">
+            <div class="panel-header-title">
+                <span>📊 Query Semantic Model</span>
+            </div>
+            <div class="panel-header-badge">CORTEX ANALYST / INSURANCE_SEMANTIC_MODEL</div>
+        </div>
+    """, unsafe_allow_html=True)
+
+    analyst_q = st.text_input(
+        "Ask a data question in natural language...",
+        placeholder="e.g. What is the average loss ratio by policy type? Which tier has the highest premium?",
+        key="analyst_input",
+        label_visibility="collapsed"
+    )
+
+    if st.button("📊 Query Semantic Model", use_container_width=True, key="analyst_btn"):
+        if analyst_q:
+            with st.spinner("Querying via Cortex Analyst..."):
+                try:
+                    analyst_resp = sf.ask_cortex_analyst(analyst_q)
+                    st.session_state["analyst_response"] = analyst_resp
+                except Exception as e:
+                    st.session_state["analyst_response"] = f"Error: {e}"
+        else:
+            st.warning("Please enter a question first.")
+
+    if "analyst_response" in st.session_state:
+        st.markdown(f"""
+        <div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:8px; padding:16px; margin-top:8px;">
+            <div style="font-weight:700; color:#166534; margin-bottom:8px;">📊 Cortex Analyst Response</div>
+            <div style="color:#14532D; font-size:13px; line-height:1.7; white-space:pre-wrap;">{st.session_state['analyst_response']}</div>
+        </div>
+        """, unsafe_allow_html=True)
 
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -2484,9 +4086,643 @@ elif "Customer 360" in selected_tab:
                 except Exception:
                     st.info("No detailed fraud alert records found.")
 
+            # ──────────────────────────────────────────────────
+            # Section 10: AI Retention Strategy (Agent-Powered)
+            # ──────────────────────────────────────────────────
+            # ── Retention Strategy Dialog ──
+            @st.dialog("AI Retention Strategy", width="small")
+            def _show_retention_dialog():
+                import html as _html
+
+                cust_data = st.session_state.get("retention_dialog_customer", {})
+                cust_name = cust_data.get("CUSTOMER_NAME", "Unknown")
+                if not cust_data:
+                    st.warning("Select a customer first.")
+                    return
+
+                churn_prob = cust_data.get('MAX_CHURN_PROBABILITY', 0)
+                try:
+                    churn_val = float(churn_prob) if churn_prob != 'N/A' else 0
+                except Exception:
+                    churn_val = 0
+                if churn_val >= 0.70:
+                    status_color = "#DC2626"; status_text = "High Churn Risk"; status_bg = "#FEF2F2"; status_border = "#FECACA"
+                elif churn_val >= 0.40:
+                    status_color = "#D97706"; status_text = "Moderate Risk"; status_bg = "#FFFBEB"; status_border = "#FDE68A"
+                else:
+                    status_color = "#059669"; status_text = "Low Risk"; status_bg = "#ECFDF5"; status_border = "#A7F3D0"
+
+                _safe_income = float(cust_data.get('ANNUAL_INCOME', 0) or 0)
+                _safe_premium = float(cust_data.get('TOTAL_PREMIUM', 0) or 0)
+                _safe_rev_risk = float(cust_data.get('TOTAL_REVENUE_AT_RISK', 0) or 0)
+
+                customer_context = (
+                    f"Customer: {cust_name}, Age: {cust_data.get('AGE', 'N/A')}, "
+                    f"Tenure: {cust_data.get('TENURE_YEARS', 'N/A')} years, "
+                    f"Annual Income: ${_safe_income:,.0f}, Total Premium: ${_safe_premium:,.0f}, "
+                    f"Churn Probability: {churn_prob}, Risk Score: {cust_data.get('MAX_RISK_SCORE', 'N/A')}, "
+                    f"Revenue at Risk: ${_safe_rev_risk:,.0f}, "
+                    f"Top Risk Factor: {cust_data.get('TOP_RISK_FACTOR', 'N/A')}, "
+                    f"Claims Filed: {cust_data.get('CLAIM_COUNT', 0)}, "
+                    f"Retention Offer: {cust_data.get('RETENTION_OFFER', 'N/A')}"
+                )
+
+                st.markdown(f"""
+                <style>
+                    [data-testid="stDialog"] > div > div {{ max-width: 600px !important; }}
+                    .ret-chat-header {{ display:flex; align-items:center; gap:12px; padding-bottom:12px; margin-bottom:4px; border-bottom:1px solid #F1F5F9; }}
+                    .ret-chat-avatar {{ width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,#7C3AED,#A855F7); display:flex; align-items:center; justify-content:center; flex-shrink:0; }}
+                    .ret-chat-avatar svg {{ stroke:white; }}
+                    .ret-chat-name {{ font-size:15px; font-weight:700; color:#0F172A; }}
+                    .ret-chat-tag {{ font-size:11px; color:#64748B; }}
+                    .ret-chat-status {{ display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:600; padding:3px 10px; border-radius:12px; margin-left:auto; background:{status_bg}; border:1px solid {status_border}; color:{status_color}; }}
+                    .ret-chat-status-dot {{ width:6px; height:6px; border-radius:50%; background:{status_color}; display:inline-block; }}
+                    .ret-chat-context {{ background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:10px 14px; margin:8px 0 4px 0; font-size:11px; color:#64748B; }}
+                    .ret-chat-context b {{ color:#334155; }}
+                    .ret-msg-ai {{ background:linear-gradient(135deg,#FDF4FF,#FAF5FF); border:1px solid #E9D5FF; border-radius:12px 12px 12px 2px; padding:12px 16px; margin:6px 0; font-size:13px; color:#1E293B; line-height:1.7; }}
+                    .ret-msg-user {{ background:linear-gradient(135deg,#7C3AED,#6D28D9); color:#FFFFFF; border-radius:12px 12px 2px 12px; padding:10px 16px; margin:6px 0 6px auto; font-size:13px; line-height:1.5; max-width:85%; text-align:right; width:fit-content; margin-left:auto; }}
+                    .ret-msg-ai-label {{ font-size:10px; font-weight:600; color:#64748B; margin-bottom:4px; display:flex; align-items:center; gap:4px; }}
+                    .ret-msg-user-label {{ font-size:10px; font-weight:600; color:#94A3B8; margin-bottom:4px; text-align:right; }}
+                </style>
+                <div class="ret-chat-header">
+                    <div class="ret-chat-avatar">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <div>
+                        <div class="ret-chat-name">AI Retention Strategy</div>
+                        <div class="ret-chat-tag">Personalized retention for {_html.escape(cust_name)}</div>
+                    </div>
+                    <div class="ret-chat-status">
+                        <span class="ret-chat-status-dot"></span>
+                        {status_text}
+                    </div>
+                </div>
+                <div class="ret-chat-context">
+                    Analyzing <b>{_html.escape(cust_name)}</b> &mdash;
+                    Churn: <b>{churn_prob}</b> &middot;
+                    Revenue at Risk: <b>${_safe_rev_risk:,.0f}</b> &middot;
+                    Premium: <b>${_safe_premium:,.0f}</b>
+                </div>
+                """, unsafe_allow_html=True)
+
+                if "retention_chat_history" not in st.session_state:
+                    st.session_state["retention_chat_history"] = []
+
+                if not st.session_state["retention_chat_history"]:
+                    with st.spinner("Generating personalized retention strategy..."):
+                        try:
+                            initial_prompt = (
+                                f"Generate a detailed, personalized retention strategy for this insurance customer. "
+                                f"{customer_context}. "
+                                f"Provide: 1) Risk assessment summary, "
+                                f"2) Personalized retention actions ranked by priority, "
+                                f"3) Recommended offer/discount strategy, "
+                                f"4) Expected revenue impact if retained vs churned. Keep it concise."
+                            )
+                            initial_response = sf.ask_intelligence_agent(initial_prompt)
+                        except Exception as e:
+                            initial_response = f"Unable to generate strategy: {e}"
+                    st.session_state["retention_chat_history"].append({"role": "ai", "content": initial_response})
+
+                for msg in st.session_state["retention_chat_history"]:
+                    safe_content = _html.escape(str(msg["content"])).replace("\n", "<br>")
+                    if msg["role"] == "ai":
+                        st.markdown(
+                            '<div class="ret-msg-ai-label">'
+                            '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>'
+                            ' Retention Strategist</div>'
+                            f'<div class="ret-msg-ai">{safe_content}</div>',
+                            unsafe_allow_html=True
+                        )
+                    else:
+                        st.markdown(
+                            f'<div class="ret-msg-user-label">You</div>'
+                            f'<div class="ret-msg-user">{safe_content}</div>',
+                            unsafe_allow_html=True
+                        )
+
+                if len(st.session_state["retention_chat_history"]) <= 2:
+                    chip_cols = st.columns(3)
+                    suggestions = [
+                        "What discount to offer?",
+                        "Revenue impact analysis?",
+                        "Compare to similar customers?"
+                    ]
+                    for i, sug in enumerate(suggestions):
+                        with chip_cols[i]:
+                            if st.button(sug, key=f"ret_chip_{i}", use_container_width=True):
+                                st.session_state["retention_chat_history"].append({"role": "user", "content": sug})
+                                with st.spinner("Thinking..."):
+                                    try:
+                                        follow_up_prompt = (
+                                            f"Context: {customer_context}. "
+                                            f"Previous conversation: {st.session_state['retention_chat_history'][-2]['content'][:300] if len(st.session_state['retention_chat_history']) >= 2 else 'Initial strategy'}. "
+                                            f"User question: {sug}. Provide a concise, focused answer."
+                                        )
+                                        follow_response = sf.ask_intelligence_agent(follow_up_prompt)
+                                    except Exception as e:
+                                        follow_response = f"Error: {e}"
+                                st.session_state["retention_chat_history"].append({"role": "ai", "content": follow_response})
+                                st.rerun()
+
+                user_question = st.chat_input("Ask about retention strategy...", key="ret_chat_input")
+                if user_question:
+                    st.session_state["retention_chat_history"].append({"role": "user", "content": user_question})
+                    recent_context = ""
+                    for m in st.session_state["retention_chat_history"][-4:]:
+                        role_label = "Assistant" if m["role"] == "ai" else "User"
+                        recent_context += f"{role_label}: {m['content'][:300]}\n"
+                    with st.spinner("Thinking..."):
+                        try:
+                            follow_up_prompt = (
+                                f"You are an AI customer retention expert. Customer context: {customer_context}. "
+                                f"Recent conversation:\n{recent_context}\n"
+                                f"User asks: {user_question}\n"
+                                f"Provide a concise, professional answer focused on this customer's retention."
+                            )
+                            follow_response = sf.ask_intelligence_agent(follow_up_prompt)
+                        except Exception as e:
+                            follow_response = f"Error: {e}"
+                    st.session_state["retention_chat_history"].append({"role": "ai", "content": follow_response})
+                    st.rerun()
+
+            st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
+            st.markdown("""
+            <div class="card-panel">
+                <div class="panel-header">
+                    <div class="panel-header-title">
+                        <span>🤖 AI-Powered Retention Strategy</span>
+                    </div>
+                    <div class="panel-header-badge">INSURANCE_INTELLIGENCE_ASSISTANT</div>
+                </div>
+            """, unsafe_allow_html=True)
+
+            if st.button(f"🧠 Generate Retention Strategy for {row.get('CUSTOMER_NAME', selected)}", use_container_width=True, type="primary", key="retention_agent_btn"):
+                cust_dict = row.to_dict() if hasattr(row, 'to_dict') else dict(row)
+                st.session_state["retention_dialog_customer"] = cust_dict
+                st.session_state.pop("retention_chat_history", None)
+                st.session_state["show_retention_dialog"] = True
+
+            if st.session_state.get("show_retention_dialog", False):
+                _show_retention_dialog()
+
+            st.markdown("</div>", unsafe_allow_html=True)
+
 
 # =========================================================================
-# TAB 5: CHAT ASSISTANT (SNOWFLAKE CORTEX AI + IMAGE ANALYSIS)
+# TAB 5: PRODUCT MATCHING (Multi-Strategy Product Recommendation Agent)
+# =========================================================================
+elif "Product Matching" in selected_tab:
+
+    # ── Top Compact Header ──
+    h_col1, h_col2 = st.columns([3, 1])
+    with h_col1:
+        st.markdown("""
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom: 2px;">
+            <span style="font-size:24px;">🎯</span>
+            <span style="font-size:22px; font-weight:800; color:#0F172A; letter-spacing:-0.5px;">Product Matching Agent</span>
+        </div>
+        <div style="font-size:13px; color:#64748B; margin-bottom:8px;">
+            AI-powered insurance product recommendations based on your needs, profile, risk, and value.
+        </div>
+        """, unsafe_allow_html=True)
+    with h_col2:
+        is_connected = st.session_state.get("sf_connected", True)
+        status_label = "Connected" if is_connected else "Offline"
+        status_bg = "#F0FDF4" if is_connected else "#FEF2F2"
+        status_border = "#BBF7D0" if is_connected else "#FCA5A5"
+        status_text = "#15803D" if is_connected else "#991B1B"
+        dot_color = "#22C55E" if is_connected else "#EF4444"
+        
+        st.markdown(f"""
+        <div style="display:flex; justify-content:flex-end; align-items:center; height:100%; padding-top:4px;">
+            <span style="background:{status_bg}; border:1px solid {status_border}; color:{status_text}; font-size:12px; font-weight:600; padding:4px 12px; border-radius:20px; display:inline-flex; align-items:center; gap:6px;">
+                <span style="width:7px; height:7px; background-color:{dot_color}; border-radius:50%; display:inline-block;"></span> ● {status_label}
+            </span>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # ── Recommendation Factors / Strategy Pills & Clear Button ──
+    s_col1, s_col2 = st.columns([4, 1])
+    with s_col1:
+        st.markdown("""
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; align-items:center;">
+            <span style="font-size:12px; font-weight:600; color:#64748B; margin-right:4px;">Analyzing across:</span>
+            <span style="background:#EFF6FF; border:1px solid #BFDBFE; color:#1D4ED8; font-size:11px; font-weight:600; padding:3px 10px; border-radius:12px;">
+                Needs-Based
+            </span>
+            <span style="background:#F0FDF4; border:1px solid #BBF7D0; color:#15803D; font-size:11px; font-weight:600; padding:3px 10px; border-radius:12px;">
+                Profile-Based
+            </span>
+            <span style="background:#FFF7ED; border:1px solid #FED7AA; color:#C2410C; font-size:11px; font-weight:600; padding:3px 10px; border-radius:12px;">
+                Risk-Adjusted
+            </span>
+            <span style="background:#FAF5FF; border:1px solid #E9D5FF; color:#7E22CE; font-size:11px; font-weight:600; padding:3px 10px; border-radius:12px;">
+                Value Optimized
+            </span>
+        </div>
+        """, unsafe_allow_html=True)
+    with s_col2:
+        if st.session_state.get("pm_chat_history"):
+            if st.button("🔄 New Search", key="pm_clear_chat", use_container_width=True):
+                st.session_state["pm_chat_history"] = []
+                st.rerun()
+
+    # Session State for Chat History
+    if "pm_chat_history" not in st.session_state:
+        st.session_state["pm_chat_history"] = []
+
+    pm_sample_prompts = [
+        "I'm a 35-year-old married engineer with 2 kids earning $150K. What insurance should I get?",
+        "What's the best health plan for a young healthy individual on a budget?",
+        "Compare Gold vs Platinum auto insurance plans",
+        "Recommend home insurance for a family in a high-risk flood zone",
+        "I have high claims history — what Life insurance tier should I consider?",
+    ]
+
+    # ── EMPTY STATE or CHAT CONVERSATION ──
+    if not st.session_state["pm_chat_history"]:
+        st.markdown("""
+        <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:16px; padding:32px 24px; text-align:center; margin:10px 0 24px 0; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
+            <div style="font-size:42px; margin-bottom:12px;">🎯</div>
+            <div style="font-size:20px; font-weight:700; color:#0F172A; margin-bottom:6px;">Product Matching Agent</div>
+            <div style="font-size:14px; font-weight:600; color:#3B82F6; margin-bottom:10px;">Find insurance products that fit your needs.</div>
+            <div style="font-size:13px; color:#64748B; max-width:540px; margin:0 auto 24px auto; line-height:1.5;">
+                Tell me about yourself, your coverage requirements, budget, family situation, or risk profile to receive tailored recommendations.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("<div style='font-size:12px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;'>Try asking:</div>", unsafe_allow_html=True)
+        chip_cols = st.columns(2)
+        for i, p in enumerate(pm_sample_prompts[:4]):
+            with chip_cols[i % 2]:
+                if st.button(f"💡 {p}", key=f"pm_empty_chip_{i}", use_container_width=True):
+                    st.session_state["pm_pending_prompt"] = p
+                    st.rerun()
+    else:
+        # Render Chat History
+        for msg in st.session_state["pm_chat_history"]:
+            if msg["role"] == "user":
+                with st.chat_message("user"):
+                    st.markdown(msg["content"])
+            else:
+                with st.chat_message("assistant", avatar="🎯"):
+                    st.markdown(msg["content"])
+
+    # ── Compact Prompt Suggestions above input during conversation ──
+    if st.session_state["pm_chat_history"]:
+        st.markdown("<div style='font-size:11px; font-weight:600; color:#94A3B8; margin-top:16px; margin-bottom:4px;'>Suggested prompts:</div>", unsafe_allow_html=True)
+        q_cols = st.columns(3)
+        for idx, prompt_text in enumerate(pm_sample_prompts[:3]):
+            with q_cols[idx]:
+                short_text = prompt_text[:50] + "..." if len(prompt_text) > 50 else prompt_text
+                if st.button(short_text, key=f"pm_conv_chip_{idx}", use_container_width=True):
+                    st.session_state["pm_pending_prompt"] = prompt_text
+                    st.rerun()
+
+    # ── Chat Input ──
+    prompt_to_run = None
+    chat_input_val = st.chat_input("Describe your insurance needs or customer profile...", key="pm_chat_input_box")
+    
+    if chat_input_val:
+        prompt_to_run = chat_input_val
+    elif st.session_state.get("pm_pending_prompt"):
+        prompt_to_run = st.session_state.pop("pm_pending_prompt")
+
+    if prompt_to_run:
+        # Add user message to history
+        st.session_state["pm_chat_history"].append({"role": "user", "content": prompt_to_run})
+        
+        # Display immediately in current render pass
+        with st.chat_message("user"):
+            st.markdown(prompt_to_run)
+            
+        with st.chat_message("assistant", avatar="🎯"):
+            with st.spinner("Analyzing your profile across needs, risk, and value..."):
+                try:
+                    response = sf.ask_product_matching_agent(prompt_to_run)
+                except Exception as e:
+                    print(f"[SECURITY REDACTED LOG] Exception in Product Matching Agent: {str(e)}")
+                    response = "⚠️ Something went wrong while generating your recommendations. Please try again."
+            st.markdown(response)
+            st.session_state["pm_chat_history"].append({"role": "assistant", "content": response})
+        st.rerun()
+
+
+# =========================================================================
+# TAB 6: MARKET INTELLIGENCE (Trend Detection Agent)
+# =========================================================================
+elif "Market Intelligence" in selected_tab:
+
+    # ── Top Compact Header ──
+    h_col1, h_col2 = st.columns([3, 1])
+    with h_col1:
+        st.markdown("""
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:2px;">
+            <span style="font-size:24px;">📊</span>
+            <span style="font-size:22px; font-weight:800; color:#0F172A; letter-spacing:-0.5px;">Market Intelligence Agent</span>
+        </div>
+        <div style="font-size:13px; color:#64748B; margin-bottom:12px;">
+            AI-powered market trend analysis and strategic insights across insurance segments.
+        </div>
+        """, unsafe_allow_html=True)
+    with h_col2:
+        is_connected = st.session_state.get("sf_connected", True)
+        status_label = "Ready" if is_connected else "Offline"
+        status_bg = "#F0FDF4" if is_connected else "#FEF2F2"
+        status_border = "#BBF7D0" if is_connected else "#FCA5A5"
+        status_text = "#15803D" if is_connected else "#991B1B"
+        dot_color = "#22C55E" if is_connected else "#EF4444"
+        
+        st.markdown(f"""
+        <div style="display:flex; justify-content:flex-end; align-items:center; height:100%; padding-top:4px;">
+            <span style="background:{status_bg}; border:1px solid {status_border}; color:{status_text}; font-size:12px; font-weight:600; padding:4px 12px; border-radius:20px; display:inline-flex; align-items:center; gap:6px;">
+                <span style="width:7px; height:7px; background-color:{dot_color}; border-radius:50%; display:inline-block;"></span> ● {status_label}
+            </span>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # ── Redesigned Compact Market KPI Summary Cards ──
+    try:
+        trend_df = sf.run_query("""
+            SELECT POLICY_TYPE,
+                   SUM(NEW_POLICIES) AS NEW_POL,
+                   SUM(CANCELLED_POLICIES) AS CANCEL_POL,
+                   AVG(RETENTION_RATE) AS AVG_RET,
+                   AVG(GROWTH_RATE) AS AVG_GROWTH,
+                   SUM(TOTAL_PREMIUM_REVENUE) AS TOTAL_REV
+            FROM INSURANCE_MGMT_SYSTEM.ANALYTICS.POLICY_TRENDS
+            GROUP BY POLICY_TYPE ORDER BY TOTAL_REV DESC
+        """)
+        if trend_df is not None and not trend_df.empty:
+            mi_cols = st.columns(len(trend_df))
+            for idx, row in trend_df.iterrows():
+                with mi_cols[idx]:
+                    growth = float(row.get("AVG_GROWTH", 0) or 0)
+                    growth_color = "#059669" if growth >= 0 else "#DC2626"
+                    growth_arrow = "↑" if growth >= 0 else "↓"
+                    st.markdown(f"""
+                    <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:12px; padding:14px 16px; box-shadow:0 1px 3px rgba(0,0,0,0.02);">
+                        <div style="font-size:11px; color:#64748B; font-weight:700; text-transform:uppercase;">{row['POLICY_TYPE']}</div>
+                        <div style="font-size:20px; font-weight:800; color:#0F172A; margin:4px 0 2px 0;">${float(row.get('TOTAL_REV',0) or 0):,.0f}</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+                            <span style="font-size:12px; color:{growth_color}; font-weight:600;">{growth_arrow} {growth:.1f}% growth</span>
+                            <span style="font-size:11px; color:#64748B; font-weight:500;">Retention {float(row.get('AVG_RET',0) or 0):.0f}%</span>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+    except Exception:
+        pass
+
+    # ── Action Row (Clear Chat & Context) ──
+    s_col1, s_col2 = st.columns([4, 1])
+    with s_col2:
+        if st.session_state.get("mi_chat_history"):
+            if st.button("🔄 New Analysis", key="mi_clear_chat", use_container_width=True):
+                st.session_state["mi_chat_history"] = []
+                st.rerun()
+
+    # Session State for Market Intelligence Chat History
+    if "mi_chat_history" not in st.session_state:
+        st.session_state["mi_chat_history"] = []
+
+    mi_sample_prompts = [
+        "What are the key market trends in Health insurance over the last 6 months?",
+        "Which product lines are growing and which are declining?",
+        "Show me retention rate trends across all insurance types",
+        "What market signals indicate we should adjust our Auto insurance strategy?",
+        "Analyze the relationship between premium growth and loss ratios",
+    ]
+
+    # ── EMPTY STATE or CONVERSATION ──
+    if not st.session_state["mi_chat_history"]:
+        st.markdown("""
+        <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:16px; padding:32px 24px; text-align:center; margin:16px 0 24px 0; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
+            <div style="font-size:42px; margin-bottom:12px;">📊</div>
+            <div style="font-size:20px; font-weight:700; color:#0F172A; margin-bottom:6px;">Market Intelligence Assistant</div>
+            <div style="font-size:14px; font-weight:600; color:#3B82F6; margin-bottom:10px;">Strategic market analysis & trend detection</div>
+            <div style="font-size:13px; color:#64748B; max-width:540px; margin:0 auto 24px auto; line-height:1.5;">
+                Ask me about market trends, growth patterns, retention, product performance, or competitive dynamics across insurance lines.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("<div style='font-size:12px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;'>Suggested Questions:</div>", unsafe_allow_html=True)
+        chip_cols = st.columns(2)
+        for i, p in enumerate(mi_sample_prompts[:4]):
+            with chip_cols[i % 2]:
+                if st.button(f"📈 {p}", key=f"mi_empty_chip_{i}", use_container_width=True):
+                    st.session_state["mi_pending_prompt"] = p
+                    st.rerun()
+    else:
+        # Render Chat History
+        for msg in st.session_state["mi_chat_history"]:
+            if msg["role"] == "user":
+                with st.chat_message("user"):
+                    st.markdown(msg["content"])
+            else:
+                with st.chat_message("assistant", avatar="📊"):
+                    st.markdown(msg["content"])
+
+    # ── Suggested prompts bar during conversation ──
+    if st.session_state["mi_chat_history"]:
+        st.markdown("<div style='font-size:11px; font-weight:600; color:#94A3B8; margin-top:16px; margin-bottom:4px;'>Suggested questions:</div>", unsafe_allow_html=True)
+        q_cols = st.columns(3)
+        for idx, prompt_text in enumerate(mi_sample_prompts[:3]):
+            with q_cols[idx]:
+                short_text = prompt_text[:50] + "..." if len(prompt_text) > 50 else prompt_text
+                if st.button(short_text, key=f"mi_conv_chip_{idx}", use_container_width=True):
+                    st.session_state["mi_pending_prompt"] = prompt_text
+                    st.rerun()
+
+    # ── Chat Input ──
+    prompt_to_run = None
+    chat_input_val = st.chat_input("Ask about market trends, growth patterns, or retention...", key="mi_chat_input_box")
+    
+    if chat_input_val:
+        prompt_to_run = chat_input_val
+    elif st.session_state.get("mi_pending_prompt"):
+        prompt_to_run = st.session_state.pop("mi_pending_prompt")
+
+    if prompt_to_run:
+        st.session_state["mi_chat_history"].append({"role": "user", "content": prompt_to_run})
+        
+        with st.chat_message("user"):
+            st.markdown(prompt_to_run)
+            
+        with st.chat_message("assistant", avatar="📊"):
+            with st.spinner("Analyzing market data across Health, Auto, Life, and Home insurance segments..."):
+                try:
+                    response = sf.ask_market_intelligence_agent(prompt_to_run)
+                except Exception as e:
+                    print(f"[SECURITY REDACTED LOG] Exception in Market Intelligence Agent: {str(e)}")
+                    response = "⚠️ Unable to analyze the market right now. Please try again."
+            st.markdown(response)
+            st.session_state["mi_chat_history"].append({"role": "assistant", "content": response})
+        st.rerun()
+
+
+# =========================================================================
+# TAB 7: COMPETITIVE PRICING (Price Optimization Agent)
+# =========================================================================
+elif "Competitive Pricing" in selected_tab:
+
+    # ── Top Compact Header ──
+    h_col1, h_col2 = st.columns([3, 1])
+    with h_col1:
+        st.markdown("""
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:2px;">
+            <span style="font-size:24px;">💰</span>
+            <span style="font-size:22px; font-weight:800; color:#0F172A; letter-spacing:-0.5px;">Competitive Pricing & Optimization</span>
+        </div>
+        <div style="font-size:13px; color:#64748B; margin-bottom:12px;">
+            AI-powered pricing analysis, loss-ratio insights, and competitive benchmarking.
+        </div>
+        """, unsafe_allow_html=True)
+    with h_col2:
+        is_connected = st.session_state.get("sf_connected", True)
+        status_label = "Ready" if is_connected else "Offline"
+        status_bg = "#F0FDF4" if is_connected else "#FEF2F2"
+        status_border = "#BBF7D0" if is_connected else "#FCA5A5"
+        status_text = "#15803D" if is_connected else "#991B1B"
+        dot_color = "#22C55E" if is_connected else "#EF4444"
+        
+        st.markdown(f"""
+        <div style="display:flex; justify-content:flex-end; align-items:center; height:100%; padding-top:4px;">
+            <span style="background:{status_bg}; border:1px solid {status_border}; color:{status_text}; font-size:12px; font-weight:600; padding:4px 12px; border-radius:20px; display:inline-flex; align-items:center; gap:6px;">
+                <span style="width:7px; height:7px; background-color:{dot_color}; border-radius:50%; display:inline-block;"></span> ● {status_label}
+            </span>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # ── Redesigned Loss Ratio Snapshot KPI Cards ──
+    try:
+        lr_df = sf.run_query("""
+            SELECT POLICY_TYPE, PLAN_TIER,
+                   AVG(LOSS_RATIO) AS AVG_LR,
+                   AVG(COMBINED_RATIO) AS AVG_CR,
+                   SUM(PREMIUMS_EARNED) AS TOTAL_PREM,
+                   SUM(CLAIMS_PAID) AS TOTAL_CLAIMS
+            FROM INSURANCE_MGMT_SYSTEM.ANALYTICS.LOSS_RATIO_HISTORY
+            GROUP BY POLICY_TYPE, PLAN_TIER
+            ORDER BY AVG_LR DESC
+            LIMIT 8
+        """)
+        if lr_df is not None and not lr_df.empty:
+            st.markdown("<div style='font-size:12px; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;'>Loss Ratio Snapshot (Higher = Less Profitable)</div>", unsafe_allow_html=True)
+            cp_cols = st.columns(4)
+            for idx, row in lr_df.head(4).iterrows():
+                with cp_cols[idx]:
+                    lr_val = float(row.get("AVG_LR", 0) or 0)
+                    lr_color = "#DC2626" if lr_val > 0.7 else ("#D97706" if lr_val > 0.5 else "#059669")
+                    lr_bg_accent = "#FEF2F2" if lr_val > 0.7 else ("#FFFBEB" if lr_val > 0.5 else "#F0FDF4")
+                    st.markdown(f"""
+                    <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:12px; padding:14px; box-shadow:0 1px 3px rgba(0,0,0,0.02);">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size:11px; color:#475569; font-weight:700; text-transform:uppercase;">{row['POLICY_TYPE']} — {row['PLAN_TIER']}</span>
+                            <span style="font-size:10px; background:{lr_bg_accent}; color:{lr_color}; font-weight:700; padding:2px 6px; border-radius:6px;">LR {lr_val:.0%}</span>
+                        </div>
+                        <div style="font-size:22px; font-weight:800; color:{lr_color}; margin:6px 0 4px 0;">{lr_val:.0%}</div>
+                        <div style="display:flex; justify-content:space-between; font-size:11px; color:#64748B;">
+                            <span>Combined: {float(row.get('AVG_CR',0) or 0):.0%}</span>
+                            <span>Premiums: ${float(row.get('TOTAL_PREM',0) or 0):,.0f}</span>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+    except Exception:
+        pass
+
+    # ── Action Row (Clear Chat & Context) ──
+    s_col1, s_col2 = st.columns([4, 1])
+    with s_col2:
+        if st.session_state.get("cp_chat_history"):
+            if st.button("🔄 New Analysis", key="cp_clear_chat", use_container_width=True):
+                st.session_state["cp_chat_history"] = []
+                st.rerun()
+
+    # Session State for Competitive Pricing Chat History
+    if "cp_chat_history" not in st.session_state:
+        st.session_state["cp_chat_history"] = []
+
+    cp_sample_prompts = [
+        "Are our Health Gold premiums competitive? Should we adjust pricing?",
+        "Which product lines have loss ratios above 70% and need premium increases?",
+        "Optimize pricing across Auto tiers to improve profitability",
+        "What's the optimal premium for Home Silver based on claims and market data?",
+        "Show me a pricing comparison across all products and tiers",
+    ]
+
+    # ── EMPTY STATE or CONVERSATION ──
+    if not st.session_state["cp_chat_history"]:
+        st.markdown("""
+        <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:16px; padding:32px 24px; text-align:center; margin:16px 0 24px 0; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
+            <div style="font-size:42px; margin-bottom:12px;">💰</div>
+            <div style="font-size:20px; font-weight:700; color:#0F172A; margin-bottom:6px;">Pricing Optimization Assistant</div>
+            <div style="font-size:14px; font-weight:600; color:#3B82F6; margin-bottom:10px;">Actuarial pricing, loss ratio analysis & benchmarking</div>
+            <div style="font-size:13px; color:#64748B; max-width:540px; margin:0 auto 24px auto; line-height:1.5;">
+                Ask me about pricing competitiveness, loss ratios, premium adjustments, profitability, or tier-level pricing recommendations.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("<div style='font-size:12px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;'>Suggested Pricing Queries:</div>", unsafe_allow_html=True)
+        chip_cols = st.columns(2)
+        for i, p in enumerate(cp_sample_prompts[:4]):
+            with chip_cols[i % 2]:
+                if st.button(f"💡 {p}", key=f"cp_empty_chip_{i}", use_container_width=True):
+                    st.session_state["cp_pending_prompt"] = p
+                    st.rerun()
+    else:
+        # Render Chat History
+        for msg in st.session_state["cp_chat_history"]:
+            if msg["role"] == "user":
+                with st.chat_message("user"):
+                    st.markdown(msg["content"])
+            else:
+                with st.chat_message("assistant", avatar="💰"):
+                    st.markdown(msg["content"])
+
+    # ── Suggested prompts bar during conversation ──
+    if st.session_state["cp_chat_history"]:
+        st.markdown("<div style='font-size:11px; font-weight:600; color:#94A3B8; margin-top:16px; margin-bottom:4px;'>Suggested pricing queries:</div>", unsafe_allow_html=True)
+        q_cols = st.columns(3)
+        for idx, prompt_text in enumerate(cp_sample_prompts[:3]):
+            with q_cols[idx]:
+                short_text = prompt_text[:50] + "..." if len(prompt_text) > 50 else prompt_text
+                if st.button(short_text, key=f"cp_conv_chip_{idx}", use_container_width=True):
+                    st.session_state["cp_pending_prompt"] = prompt_text
+                    st.rerun()
+
+    # ── Chat Input ──
+    prompt_to_run = None
+    chat_input_val = st.chat_input("Ask about pricing strategy, loss ratios, or competitive benchmarking...", key="cp_chat_input_box")
+    
+    if chat_input_val:
+        prompt_to_run = chat_input_val
+    elif st.session_state.get("cp_pending_prompt"):
+        prompt_to_run = st.session_state.pop("cp_pending_prompt")
+
+    if prompt_to_run:
+        st.session_state["cp_chat_history"].append({"role": "user", "content": prompt_to_run})
+        
+        with st.chat_message("user"):
+            st.markdown(prompt_to_run)
+            
+        with st.chat_message("assistant", avatar="💰"):
+            with st.spinner("Price Optimization Agent evaluating loss ratios, combined ratios, and pricing competitiveness..."):
+                try:
+                    response = sf.ask_price_optimization_agent(prompt_to_run)
+                except Exception as e:
+                    print(f"[SECURITY REDACTED LOG] Exception in Price Optimization Agent: {str(e)}")
+                    response = "⚠️ Unable to complete the pricing analysis. Please try again."
+            st.markdown(response)
+            st.session_state["cp_chat_history"].append({"role": "assistant", "content": response})
+        st.rerun()
+
+
+# =========================================================================
+# TAB 8: CHAT ASSISTANT (SNOWFLAKE CORTEX AI + IMAGE ANALYSIS)
 # =========================================================================
 elif "Chat Assistant" in selected_tab:
     if "messages" not in st.session_state:
