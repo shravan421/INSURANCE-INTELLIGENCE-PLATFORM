@@ -1,65 +1,84 @@
 # Insurance Intelligence Platform
 
-An enterprise-grade, data-driven **Insurance Intelligence Platform** built with **Python**, **Streamlit**, **Snowflake (Cortex AI & Data Cloud)**, and **Plotly**. Designed for underwriters, risk managers, actuarial analysts, and insurance executives to perform real-time policy book underwriting, AI-powered claims triage with visual damage image analysis, loss ratio monitoring, and dynamic predictive pricing simulation.
+An enterprise-grade, data-driven **Insurance Intelligence Platform** built with **Python**, **Streamlit**, **Snowflake (Cortex AI, Cortex Search & Data Cloud)**, **Pandas**, and **Plotly**.
+
+Designed for underwriters, claims adjusters, risk managers, actuarial analysts, and insurance executives to perform real-time policy underwriting, AI-powered claims triage with visual damage inspection, market trend detection, actuarial rate modeling, and conversational AI product & pricing optimization.
 
 ---
 
 ## 📋 Table of Contents
 1. [Project Overview](#-project-overview)
-2. [Key Platform Capabilities & Recent Updates](#-key-platform-capabilities--recent-updates)
-3. [Technology Stack](#-technology-stack)
-4. [Project Directory Structure](#-project-directory-structure)
-5. [Prerequisites](#-prerequisites)
-6. [Setup & Installation](#-setup--installation)
-7. [Environment Configuration](#-environment-configuration)
-8. [Snowflake Configuration](#-snowflake-configuration)
-9. [Run Application](#-run-application)
-10. [Testing](#-testing)
-11. [Team Git Workflow](#-team-git-workflow)
-12. [VS Code Team Quickstart](#-vs-code-team-quickstart)
+2. [Key Platform Capabilities](#-key-platform-capabilities)
+3. [Authentication & Connection Flow](#-authentication--connection-flow)
+4. [Technology Stack](#-technology-stack)
+5. [Project Directory Structure](#-project-directory-structure)
+6. [Application Modules](#-application-modules)
+7. [Snowflake Architecture & Data Integration](#-snowflake-architecture--data-integration)
+8. [Prerequisites](#-prerequisites)
+9. [Setup & Installation](#-setup--installation)
+10. [Environment Configuration](#-environment-configuration)
+11. [Testing & Verification](#-testing--verification)
+12. [Team Git Workflow](#-team-git-workflow)
 13. [Security Best Practices](#-security-best-practices)
 
 ---
 
 ## 🎯 Project Overview
 
-The **Insurance Intelligence Platform** provides live intelligence and analytical decision-support for enterprise insurance operations across underwriting, claims investigation, actuarial modeling, and conversational AI assistance.
+The **Insurance Intelligence Platform** provides live intelligence and decision-support for enterprise insurance operations across underwriting, claims investigation, actuarial modeling, customer 360 analytics, and conversational AI assistance.
 
-Key modules include:
-- **Underwriting Workbench**: Real-time policy book management, live Snowflake policy dataset auditing (300 live records), dynamic predictive ML premium quoting, and interactive actuarial rate driver calculations.
-- **Claims & Fraud Console**: AI-powered claims triage, fraud risk scoring, automated SIU escalation workflows, and Cortex semantic search over investigation notes.
-- **AI Chat Assistant (Cortex Powered)**: ChatGPT-style conversational assistant with inline image/damage file attachments, persistent chat history, and live Cortex Agent (`INSURANCE_MASTER_AGENT`) execution.
-- **Actuarial Rate Modeling**: Interactive rate adjustments, combined ratio scenario planning, and loss ratio trend monitoring.
+Key capabilities include:
+- **Direct Automatic Snowflake Connection**: Establishes live Snowflake session on application load with automated connection health validation (`SELECT CURRENT_USER(), CURRENT_ACCOUNT();`).
+- **Conversational AI Experience**: ChatGPT-inspired enterprise assistant interfaces with quick prompt chips, structured Markdown responses, multi-turn history, and floating message composers across AI modules.
+- **Visual Claim Triage**: Multi-modal chat assistant with inline image upload for evaluating vehicle and property damage claims.
+- **Cortex Natural Language Search**: Vectorized search over claim investigation notes and alert histories.
 
 ---
 
-## ⚡ Key Platform Capabilities & Recent Updates
+## ⚡ Key Platform Capabilities
 
-### 🖼️ AI Chat Assistant with Visual Damage & Document Uploads
-- **Inline Image & File Attachments**: Underwriters and claims adjusters can upload vehicle damage photos, structural property damage images, or claim PDFs directly inside the chat console.
-- **Visual Claim Triage**: Attach damage images alongside prompt inquiries to evaluate claim context, estimate repair severity, and trigger automated fraud risk assessments.
-- **ChatGPT-Style UX**: Modern responsive interface with persistent conversation history, model thinking process drawer, and smooth streaming responses.
+### 💬 Modern Conversational AI Interface
+- **ChatGPT-Style UX**: Modern responsive interface with persistent conversation history, avatar badges, suggestion prompt chips, and clean floating message bars.
+- **Interactive Assistance**: Dedicated AI modules for **Product Matching**, **Market Intelligence**, **Competitive Pricing**, and **Claims Fraud Triage**.
+- **Multi-Modal Image Analysis**: Upload vehicle damage photos or property claim documents directly inside the Chat Assistant for visual severity estimation.
 
-### 🛡️ Audited Live Snowflake Data Integration
-- **Verified Policy Book**: 100% verified live query execution against `INSURANCE_MGMT_SYSTEM.GOLD.FACT_POLICY` (300 live policy rows).
-- **Accurate Real-Time KPIs**:
+### 🛡️ Direct & Audited Snowflake Data Integration
+- **Live Query Execution**: Queries 300 live policy records in `INSURANCE_MGMT_SYSTEM.GOLD.FACT_POLICY` or `CORE.POLICIES`.
+- **Real-Time KPI Auditing**:
   - **Total Policies**: `300`
   - **Active Book**: `180`
   - **Total Premium Volume**: `$2,320,783`
   - **Average Premium**: `$7,735.94`
-- **Dynamic Predictive ML Quoting**: Dynamic premium valuation computed in real time via Snowflake SQL predictive algorithms with reactive actuarial rate multipliers (Credit Score, Age, Coverage Exposure).
+- **Cortex Search Engine**: High-speed search over `ANALYTICS.CLAIM_NOTES_SEARCH` using `SNOWFLAKE.CORTEX.SEARCH_PREVIEW`.
+
+---
+
+## 🔐 Authentication & Connection Flow
+
+The platform utilizes a **Direct Automatic Snowflake Connection**:
+
+1. **Startup**: When Streamlit starts, credentials are loaded directly from the local environment (`.env`).
+2. **Authentication**: Connects securely via `snowflake-connector-python` using `SNOWFLAKE_AUTHENTICATOR=snowflake` (default username + password authentication).
+3. **Passkey / MFA Flow Removed**: The application no longer prompts for terminal passkeys or Duo MFA codes on process startup.
+4. **Automated Validation**: Executes a lightweight validation query upon connection (`SELECT CURRENT_USER(), CURRENT_ACCOUNT();`) and displays a live connection status indicator (`● Snowflake Connected`) in the sidebar.
+
+```text
+Streamlit Starts ➔ Load Credentials (.env) ➔ Connect to Snowflake ➔ Validate Connection ➔ Load Platform
+```
 
 ---
 
 ## 🛠️ Technology Stack
 
-- **Core Runtime**: Python 3.9+
-- **Web Application Framework**: [Streamlit](https://streamlit.io/) (v1.30.0+)
-- **Data Platform**: [Snowflake Data Cloud](https://www.snowflake.com/) (`snowflake-connector-python`)
-- **AI & Data Agents**: Snowflake Cortex AI (`SNOWFLAKE.CORTEX.DATA_AGENT_RUN`)
-- **Data Analytics & Processing**: [Pandas](https://pandas.pydata.org/)
-- **Data Visualization**: [Plotly](https://plotly.com/) (Express & Graph Objects)
-- **Environment Management**: `python-dotenv`
+- **Frontend / Presentation**: [Streamlit](https://streamlit.io/) (v1.30.0+) with custom enterprise CSS components.
+- **Data Engine**: [Snowflake Data Cloud](https://www.snowflake.com/) (`snowflake-connector-python` v3.6.0+)
+- **AI & Cortex Services**:
+  - Snowflake Cortex Agent REST API (`SNOWFLAKE.CORTEX.DATA_AGENT_RUN`)
+  - Snowflake Cortex Search (`SNOWFLAKE.CORTEX.SEARCH_PREVIEW`)
+- **Data Analytics & Processing**: [Pandas](https://pandas.pydata.org/) (v2.0.0+)
+- **Data Visualization**: [Plotly](https://plotly.com/) (Express & Graph Objects v5.18.0+)
+- **Document Processing**: `fpdf2` (v2.7.0+)
+- **Environment Management**: `python-dotenv` (v1.0.0+)
 
 ---
 
@@ -68,18 +87,105 @@ Key modules include:
 ```text
 INSURANCE-INTELLIGENCE-PLATFORM/
 │
+├── .env                              # Local environment variables (Snowflake credentials, ignored by Git)
+├── .env.example                      # Template configuration file for environment variables
+├── .gitignore                        # Git ignore rules for secrets, virtualenv, and Python caches
+│
 ├── .streamlit/
-│   └── config.toml                  # Streamlit layout theme and visual settings
+│   └── config.toml                   # Streamlit layout theme and UI configuration
 │
-├── app.py                           # Main Streamlit application and platform UI
-├── snowflake_utils.py               # Snowflake connection manager, Cortex agent, & live SQL queries
-├── test_env.py                      # Environment variable & Snowflake connection validation script
+├── app.py                            # Main Streamlit web application & 8 enterprise intelligence modules
+├── snowflake_utils.py                # Snowflake connection manager, Cortex Search, Cortex Agents & SQL fetchers
+├── test_env.py                       # Environment & connection validation script
 │
-├── requirements.txt                 # Project Python package dependencies
-├── README.md                        # Project documentation and setup guide
-├── .gitignore                       # Git ignore rules for credentials, caches, and venv
-└── .env.example                     # Template file for environment variable setup
+├── requirements.txt                  # Python dependencies
+└── README.md                         # Project documentation and setup guide
 ```
+
+---
+
+## 📑 Application Modules
+
+The application consists of 8 core enterprise modules accessible from the sidebar:
+
+### 1. 📑 Underwriting Workbench
+- **Purpose**: Real-time policy book management, actuarial rate modeling, and dynamic ML premium quoting.
+- **Features**:
+  - Live policy book overview with policy status filtering (Active, Expired, Cancelled, Pending).
+  - Dynamic predictive ML premium calculator with actuarial rate drivers (Age, Credit Score, Coverage Exposure).
+  - Rate driver sensitivity controls and policy tier selection (Bronze, Silver, Gold, Platinum).
+- **Data**: Queries `GOLD.FACT_POLICY` and `CORE.POLICIES`.
+
+### 2. 🛡️ Claims & Fraud Console
+- **Purpose**: AI-powered claims triage, fraud risk assessment, and claims data search.
+- **Features**:
+  - **Search Claims Intelligence**: Natural language search over investigation notes using Snowflake Cortex Search Service (`ANALYTICS.CLAIM_NOTES_SEARCH`).
+  - **Conversational AI Fraud Triage Assistant**: Inline ChatGPT-style chat workspace evaluating red flags, fraud scores, and SIU (Special Investigation Unit) escalation recommendations using `CLAIMS_FRAUD_TRIAGE_AGENT`.
+  - Claim details inspection and anomaly score indicators.
+- **Data/AI**: Snowflake Cortex Search Service & `CLAIMS_FRAUD_TRIAGE_AGENT`.
+
+### 3. 📈 Risk & Pricing Dashboard
+- **Purpose**: Portfolio loss ratio history, risk retention analytics, and portfolio risk exposure.
+- **Features**:
+  - Combined ratio scenario modeling and portfolio loss ratio trends across policy types.
+  - At-risk policy retention scoring and risk distribution analysis.
+- **Data**: Queries `ANALYTICS.LOSS_RATIO_HISTORY` and `ANALYTICS.PORTFOLIO_RISK`.
+
+### 4. 📊 Customer 360
+- **Purpose**: Single view of customer profile, lifetime value, and policy portfolios.
+- **Features**:
+  - Customer overview KPIs: total policies, lifetime premium, claims count, and risk tier.
+  - Policyholder search and cross-sell opportunity identification.
+- **Data**: Queries `ANALYTICS.CUSTOMER_360_VIEW` and `GOLD.FACT_POLICY`.
+
+### 5. 🎯 Product Matching
+- **Purpose**: Multi-strategy insurance product recommendation assistant.
+- **Features**:
+  - **ChatGPT-Style Conversational Interface**: Clean enterprise AI layout with welcome empty state, quick scenario chips, and floating message bar.
+  - Multi-strategy analysis across 4 pillars: `Needs-Based`, `Profile-Based`, `Risk-Adjusted`, and `Value Optimized`.
+- **Data/AI**: Snowflake Cortex Agent (`PRODUCT_MATCHING_AGENT`).
+
+### 6. 📊 Market Intelligence
+- **Purpose**: Strategic market trend detection and competitive intelligence across insurance lines.
+- **Features**:
+  - **ChatGPT-Style Conversational Interface**: Interactive assistant with live market KPI cards for Health, Auto, Life, and Home lines.
+  - Revenue tracking, growth rate indicators (`↑ 4.6% growth`), and retention rates.
+- **Data/AI**: `ANALYTICS.POLICY_TRENDS` and `INSURANCE_INTELLIGENCE_AGENT`.
+
+### 7. 💰 Competitive Pricing & Optimization
+- **Purpose**: Actuarial premium benchmarking and loss ratio optimization.
+- **Features**:
+  - **ChatGPT-Style Conversational Interface**: Conversational workspace with compact Loss Ratio Snapshot KPI cards.
+  - Premium optimization insights, loss ratio breakdown (`LR 64%`), and combined ratio analysis.
+- **Data/AI**: `ANALYTICS.LOSS_RATIO_HISTORY` and `INSURANCE_INTELLIGENCE_AGENT`.
+
+### 8. 💬 Chat Assistant
+- **Purpose**: Universal enterprise insurance assistant powered by Snowflake Cortex AI.
+- **Features**:
+  - Multi-modal conversation with inline vehicle/property damage image attachments.
+  - Built-in suggested inquiries, persistent chat history, and structured Markdown responses.
+- **Data/AI**: `INSURANCE_INTELLIGENCE_ASSISTANT` (Cortex Agent REST API).
+
+---
+
+## ❄️ Snowflake Architecture & Data Integration
+
+The platform integrates directly with the Snowflake Data Cloud using the following schema objects and services:
+
+| Object Type | Name / FQN | Purpose |
+| :--- | :--- | :--- |
+| **Database** | `INSURANCE_MGMT_SYSTEM` | Central data repository |
+| **Table** | `GOLD.FACT_POLICY` | Verified policy dataset (300 live records) |
+| **Table** | `CORE.POLICIES` | Fallback policy master table |
+| **Table** | `CORE.CLAIMS` | Master claims record table |
+| **Table** | `ANALYTICS.FRAUD_PREDICTIONS_ML` | ML fraud scores and alert classifications |
+| **Table** | `ANALYTICS.POLICY_TRENDS` | Segment market trends, revenue, growth & retention |
+| **Table** | `ANALYTICS.LOSS_RATIO_HISTORY` | Actuarial loss ratios and combined ratios |
+| **Table** | `ANALYTICS.CUSTOMER_360_VIEW` | Aggregated customer profiles |
+| **Cortex Search** | `ANALYTICS.CLAIM_NOTES_SEARCH` | Vectorized natural language search over investigation notes |
+| **Cortex Agent** | `ANALYTICS.INSURANCE_INTELLIGENCE_ASSISTANT` | Universal Insurance Intelligence Assistant |
+| **Cortex Agent** | `ANALYTICS.CLAIMS_FRAUD_TRIAGE_AGENT` | Claims Fraud Triage Agent |
+| **Cortex Agent** | `GOLD.PRODUCT_MATCHING_AGENT` | Multi-strategy Product Recommendation Agent |
 
 ---
 
@@ -87,7 +193,7 @@ INSURANCE-INTELLIGENCE-PLATFORM/
 
 - **Python**: Version 3.9 or higher installed.
 - **Git**: Installed and available in terminal.
-- **Snowflake Account**: User access with permissions to `INSURANCE_MGMT_SYSTEM` database (or local `.env` configured).
+- **Snowflake Account**: User access with permissions to `INSURANCE_MGMT_SYSTEM` database.
 
 ---
 
@@ -101,7 +207,7 @@ cd INSURANCE-INTELLIGENCE-PLATFORM
 
 ### 2. Create Virtual Environment
 
-**Windows:**
+**Windows (PowerShell):**
 ```powershell
 python -m venv .venv
 .venv\Scripts\activate
@@ -126,34 +232,47 @@ pip install -r requirements.txt
    ```bash
    cp .env.example .env
    ```
-2. Open `.env` and fill in your Snowflake credentials and database configuration:
+
+2. Open `.env` and configure your Snowflake credentials:
    ```env
    SNOWFLAKE_USER=your_snowflake_username
    SNOWFLAKE_PASSWORD=your_snowflake_password
    SNOWFLAKE_ACCOUNT=your_snowflake_account_identifier
-   SNOWFLAKE_WAREHOUSE=HACKATHONTEAMAVENGERS
+   SNOWFLAKE_WAREHOUSE=INSURANCE_WH
    SNOWFLAKE_DATABASE=INSURANCE_MGMT_SYSTEM
    SNOWFLAKE_SCHEMA=GOLD
    SNOWFLAKE_AUTHENTICATOR=snowflake
    ```
-3. **NEVER** commit your `.env` file to Git. It is automatically ignored by `.gitignore`.
+
+3. **Security Note**: Never commit your `.env` file to Git. It is automatically ignored by `.gitignore`.
 
 ---
 
-## ❄️ Snowflake Configuration
+## 🧪 Testing & Verification
 
-The application authenticates securely to Snowflake using parameters loaded via environment variables in `snowflake_utils.py`:
+To verify your environment configuration and direct Snowflake connection:
 
-- Connection settings are dynamically read using `os.getenv()`.
-- Credentials remain strictly local to your machine.
-- All policy, claims, loss ratio, and analytics queries run strictly live against your Snowflake Data Cloud tables.
-- Conversational queries invoke Snowflake Cortex Data Agent (`INSURANCE_MGMT_SYSTEM.GOLD.INSURANCE_MASTER_AGENT`).
+```bash
+python test_env.py
+```
+
+To test connection validation and live query execution directly:
+```bash
+python -c "import snowflake_utils as sf; print(sf.validate_connection()); print(sf.get_policies_data().head())"
+```
+
+Expected output:
+```text
+{'valid': True, 'user': 'YOUR_USER', 'account': 'YOUR_ACCOUNT'}
+   POLICY_ID    TYPE      TIER  PREMIUM     STATUS
+0  POL-00000  Health    Bronze   6287.0     Active
+```
 
 ---
 
 ## 💻 Run Application
 
-To launch the Streamlit dashboard:
+To start the Streamlit application:
 
 ```bash
 streamlit run app.py
@@ -163,30 +282,9 @@ The application will start locally and open in your default browser at `http://l
 
 ---
 
-## 🧪 Testing
-
-To test and verify your local environment configuration and Snowflake connection:
-
-```bash
-python test_env.py
-```
-
-If configured correctly, it will print confirmation that environment variables were successfully loaded.
-
----
-
 ## 🔀 Team Git Workflow
 
 We follow a branch-based Git workflow. Direct commits to `main` are restricted.
-
-### Branch Naming Conventions
-- `feature/insurance-intelligence`
-- `feature/damage-image-attachments`
-- `feature/underwriting-workbench`
-- `feature/snowflake-integration`
-- `feature/<developer-name>`
-
-### Standard Development Workflow
 
 1. **Pull latest `main`**:
    ```bash
@@ -197,49 +295,18 @@ We follow a branch-based Git workflow. Direct commits to `main` are restricted.
    ```bash
    git checkout -b feature/your-feature-name
    ```
-3. **Make changes and commit**:
+3. **Commit and Push**:
    ```bash
    git add .
-   git commit -m "Add description of your changes"
-   ```
-4. **Push branch to GitHub**:
-   ```bash
+   git commit -m "Description of changes"
    git push -u origin feature/your-feature-name
    ```
-5. **Create Pull Request**: Open a PR on GitHub targeting `main` for code review.
-
----
-
-## 💻 VS Code Team Quickstart
-
-For teammates opening this project in VS Code:
-
-1. Clone and open project:
-   ```bash
-   git clone https://github.com/shravan421/INSURANCE-INTELLIGENCE-PLATFORM.git
-   cd INSURANCE-INTELLIGENCE-PLATFORM
-   code .
-   ```
-2. Create and activate virtual environment:
-   ```powershell
-   python -m venv .venv
-   .venv\Scripts\activate
-   ```
-3. Install packages:
-   ```powershell
-   pip install -r requirements.txt
-   ```
-4. Configure `.env`:
-   - Copy `.env.example` -> `.env`
-   - Enter your Snowflake credentials.
-5. Launch app:
-   ```powershell
-   streamlit run app.py
-   ```
+4. **Create Pull Request**: Open a PR on GitHub targeting `main`.
 
 ---
 
 ## 🛡️ Security Best Practices
 
-- `.env`, `*.pyc`, `__pycache__/`, `.venv/`, and `.streamlit/secrets.toml` are strictly ignored in `.gitignore`.
-- Always inspect `git status` before committing to ensure no credentials or secret keys are staged.
+- `.env`, `.venv/`, `__pycache__/`, and `.streamlit/secrets.toml` are strictly ignored in `.gitignore`.
+- Direct automatic connection uses secure environment variables without prompting for passkeys or exposing secrets in code or logs.
+- All raw database errors are intercepted and sanitized before rendering in the UI.
